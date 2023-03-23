@@ -9,3 +9,4 @@ s.app.get("/", (_, res: express.Response) => res.sendStatus(200));
 
 // routes
 s.app.use("/api", mainRoute);
+s.app.use("/api", (_, res) => res.sendStatus(200));

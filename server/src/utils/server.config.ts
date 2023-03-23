@@ -24,7 +24,7 @@ export default function serverConfig() {
 
   app.use(helmet());
   app.use(express.json());
-  app.use(cors({ origin }));
+  app.use(cors({ origin, credentials: true }));
 
   io.on("connect", (socket) => {});
 
