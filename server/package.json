@@ -7,16 +7,17 @@
     "dev": "tsnd --respawn --transpile-only  src/app.ts"
   },
   "dependencies": {
+    "@types/cors": "^2.8.13",
     "config": "^3.3.9",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "helmet": "^6.0.1",
-    "socket.io": "^4.6.1"
+    "socket.io": "^4.6.1",
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@types/config": "^3.3.0",
-    "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
     "@types/node": "^18.15.5",
     "dayjs": "^1.11.7",
