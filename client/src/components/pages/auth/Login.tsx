@@ -11,6 +11,7 @@ import {
 import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
+import constants from "../../../constants";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -23,8 +24,29 @@ export default function Login() {
         .min(8, "Password too short!")
         .max(32, "Password too long!"),
     }),
-    onSubmit: (values, actions) => {
-      alert(JSON.stringify(values, null, 2)), actions.resetForm();
+    onSubmit: async (values, actions) => {
+      const vals = { ...values };
+      // alert(JSON.stringify(values, null, 2));
+      actions.resetForm();
+      try {
+        // console.log(config.get("apiUrl"));
+        const response = await (
+          await fetch(`${constants.apiUrl}/sessions`, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(vals),
+          })
+        ).json();
+        alert(response);
+        console.log(response);
+        return response;
+      } catch (err: any) {
+        alert(err);
+        return err.message;
+      }
     },
   });
   return (

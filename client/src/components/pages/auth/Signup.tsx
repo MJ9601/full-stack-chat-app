@@ -4,6 +4,8 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import TextField from "../../common/TextField";
 import { useNavigate } from "react-router-dom";
+// import config from "config";
+import constants from "../../../constants";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -22,9 +24,27 @@ export default function Signup() {
           .oneOf([yup.ref("password")], "Password don't match!")
           .required(),
       })}
-      onSubmit={(values, actions) => {
+      onSubmit={async (values, actions) => {
+        const vals = { ...values };
         alert(JSON.stringify(values, null, 2));
         actions.resetForm();
+        try {
+          const response = await (
+            await fetch(`${constants.apiUrl}/users`, {
+              method: "POST",
+              credentials: "include",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(vals),
+            })
+          ).json();
+
+          console.log(response);
+          return response;
+        } catch (err: any) {
+          return err.message;
+        }
       }}
     >
       <VStack
@@ -37,19 +57,25 @@ export default function Signup() {
       >
         <Heading>Sign Up</Heading>
         <TextField
+          // @ts-ignore
           name="username"
+          type="email"
           label="username"
           placeholder="Enter username"
           autoComplete="off"
         />
         <TextField
+          // @ts-ignore
           name="password"
+          type="password"
           label="password"
           placeholder="Enter password"
           autoComplete="off"
         />
         <TextField
+          // @ts-ignore
           name="confirmedPassword"
+          type="password"
           label="Confirmed Password"
           placeholder="Enter password"
           autoComplete="off"
