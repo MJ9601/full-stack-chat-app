@@ -9,7 +9,7 @@ export const createUserController = async (
   const { body } = req;
   try {
     logger.info({ body });
-    return res.status(200).send("ok");
+    return res.status(200).send(body);
   } catch (err: any) {
     return res.status(401).send("user already exists!");
   }

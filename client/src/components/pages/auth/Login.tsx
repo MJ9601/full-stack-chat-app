@@ -40,8 +40,6 @@ export default function Login() {
             body: JSON.stringify(vals),
           })
         ).json();
-        alert(response);
-        console.log(response);
         return response;
       } catch (err: any) {
         alert(err);
