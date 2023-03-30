@@ -6,6 +6,7 @@ import { createServer } from "http";
 import cors from "cors";
 import config from "config";
 import logger from "./logger";
+import EVENTS from "./EVENTS";
 
 export default function serverConfig() {
   const app = express();
@@ -26,7 +27,7 @@ export default function serverConfig() {
   app.use(express.json());
   app.use(cors({ origin, credentials: true }));
 
-  io.on("connect", (socket) => {});
+  io.on(EVENTS.CONNECTION, (socket) => {});
 
   server.listen(port, () => logger.info(`Server is listening on PORT ${port}`));
 
