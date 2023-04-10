@@ -13,7 +13,7 @@ datasource db {
 model User {
   id       String @id @default(cuid())
   username String @unique
-  passhash String
+  password String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
