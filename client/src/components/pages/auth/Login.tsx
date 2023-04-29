@@ -48,49 +48,54 @@ export default function Login() {
     },
   });
   return (
-    <VStack
-      as="form"
-      w={{ base: "90%", md: "500px" }}
-      mx="auto"
-      justify="center"
-      spacing="1rem"
-      h="100vh"
-      onSubmit={formik.handleSubmit as any}
-    >
-      <Heading>Log in</Heading>
-      <FormControl
-        isInvalid={!!formik.errors.username && formik.touched.username}
+    <>
+      {/* @ts-ignore */}
+      <VStack
+        as="form"
+        w={{ base: "90%", md: "500px" }}
+        mx="auto"
+        justify="center"
+        spacing="1rem"
+        h="100vh"
+        onSubmit={formik.handleSubmit as any}
       >
-        <FormLabel>Username</FormLabel>
-        <Input
-          name="username"
-          placeholder="Enter username"
-          size="lg"
-          value={formik.values.username}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-        />
-        <FormErrorMessage>{formik.errors.username}</FormErrorMessage>
-      </FormControl>
+        <Heading>Log in</Heading>
+        <FormControl
+          isInvalid={!!formik.errors.username && formik.touched.username}
+        >
+          <FormLabel>Username</FormLabel>
+          <Input
+            name="username"
+            placeholder="Enter username"
+            size="lg"
+            value={formik.values.username}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+          />
+          <FormErrorMessage>{formik.errors.username}</FormErrorMessage>
+        </FormControl>
 
-      <FormControl
-        isInvalid={!!formik.errors.password && formik.touched.password}
-      >
-        <FormLabel>Password</FormLabel>
-        <Input
-          placeholder="Enter password"
-          size="lg"
-          type="password"
-          {...formik.getFieldProps("password")}
-        />
-        <FormErrorMessage>{formik.errors.password}</FormErrorMessage>
-      </FormControl>
-      <ButtonGroup pt="1rem">
-        <Button colorScheme="teal" type="submit">
-          Log In
-        </Button>
-        <Button onClick={() => navigate("/register")}>Create an Account</Button>
-      </ButtonGroup>
-    </VStack>
+        <FormControl
+          isInvalid={!!formik.errors.password && formik.touched.password}
+        >
+          <FormLabel>Password</FormLabel>
+          <Input
+            placeholder="Enter password"
+            size="lg"
+            type="password"
+            {...formik.getFieldProps("password")}
+          />
+          <FormErrorMessage>{formik.errors.password}</FormErrorMessage>
+        </FormControl>
+        <ButtonGroup pt="1rem">
+          <Button colorScheme="teal" type="submit">
+            Log In
+          </Button>
+          <Button onClick={() => navigate("/register")}>
+            Create an Account
+          </Button>
+        </ButtonGroup>
+      </VStack>
+    </>
   );
 }
