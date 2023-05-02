@@ -7,6 +7,7 @@ import cors from "cors";
 import config from "config";
 import logger from "./logger";
 import EVENTS from "./EVENTS";
+import { version } from "../../package.json";
 
 export default function serverConfig() {
   const app = express();
@@ -29,7 +30,11 @@ export default function serverConfig() {
 
   io.on(EVENTS.CONNECTION, (socket) => {});
 
-  server.listen(port, () => logger.info(`Server is listening on PORT ${port}`));
+  server.listen(port, () =>
+    logger.info(
+      `Server with VERSION of ${version} is listening on PORT ${port}`
+    )
+  );
 
   return { server, app };
 }

@@ -8,6 +8,6 @@ export const validateUsernameAndPassword = async (
   const user = await prisma.user.findUnique({ where: { username } });
   if (!user) return false;
 
-  const compairedPass = await bcrypt.compareSync(incomingPass, user.passhash);
+  const compairedPass = await bcrypt.compareSync(incomingPass, user.password);
   return !compairedPass ? false : user;
 };
