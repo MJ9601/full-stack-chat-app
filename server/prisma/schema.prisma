@@ -20,32 +20,40 @@ model User {
 
   Room    Room?     @relation(fields: [roomId], references: [id])
   roomId  String?
-  message message[]
-  session session[]
+  message Message[]
+  session Session[]
 }
 
 model Room {
   id   String @id @default(cuid())
-  name String
+  name String?
 
   members User[]
+  msgs    Message[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model message {
+model Message {
   id  String @id @default(cuid())
   msg String
 
   creater User   @relation(fields: [userId], references: [id])
   userId  String
 
+  msgReply Message? @relation("REPLY", fields: [msgId], references: [id])
+  msgId    String?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  message Message[] @relation("REPLY")
+  Room    Room?     @relation(fields: [roomId], references: [id])
+  roomId  String?
 }
 
-model session {
+model Session {
   id String @id @default(cuid())
 
   userIp    String
