@@ -6,7 +6,7 @@ import { createServer } from "http";
 import cors from "cors";
 import config from "config";
 import logger from "./logger";
-import EVENTS from "./EVENTS";
+import cookieParser from 'cookie-parser'
 import { version } from "../../package.json";
 import socketConfig from "./socket.config";
 
@@ -27,6 +27,7 @@ export default function serverConfig() {
 
   app.use(helmet());
   app.use(express.json());
+  app.use(cookieParser())
   app.use(cors({ origin, credentials: true }));
 
   socketConfig({ io });

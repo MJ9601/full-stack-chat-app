@@ -23,3 +23,11 @@ export const createUserController = async (
       .send({ msg: "Server Error!", msgErr: err.message, codeErr: err.code });
   }
 };
+
+export const getMeController = (_: Request, res: Response) => {
+  try {
+    return res.status(200).send(res.locals.user);
+  } catch (error) {
+    return res.status(500).send({ err: error, msg: error.message });
+  }
+};

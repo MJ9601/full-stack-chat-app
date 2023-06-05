@@ -1,4 +1,4 @@
 export default {
-  accTokenTimeToLive: "15m",
+  accTokenTimeToLive: "15s",
   refTokenTimeToLive: "30d",
 };

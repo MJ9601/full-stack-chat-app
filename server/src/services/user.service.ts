@@ -1,5 +1,6 @@
 import { Prisma } from "@prisma/client";
 import prisma from "../database/prisma.config";
+import bcrypt from "bcrypt";
 
 export const createUser = async (input: Prisma.UserCreateArgs) =>
   prisma.user.create(input);
@@ -18,3 +19,14 @@ export const deleteManyUsers = async (input: Prisma.UserDeleteManyArgs) =>
 
 export const deleteOneUsers = async (input: Prisma.UserDeleteArgs) =>
   prisma.user.delete(input);
+
+export const validateUsernameAndPassword = async (
+  username: string,
+  incomingPass: string
+) => {
+  const user = await prisma.user.findUnique({ where: { username } });
+  if (!user) return false;
+
+  const compairedPass = await bcrypt.compareSync(incomingPass, user.password);
+  return !compairedPass ? false : user;
+};
