@@ -6,6 +6,7 @@ import TextField from "../../common/TextField";
 import { useNavigate } from "react-router-dom";
 // import config from "config";
 import constants from "../../../constants";
+import axios from "axios";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -30,16 +31,24 @@ export default function Signup() {
         console.log(vals);
         actions.resetForm();
         try {
-          const response = await (
-            await fetch(`${constants.apiUrl}/users`, {
-              method: "POST",
-              credentials: "include",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(vals),
-            })
-          ).json();
+          const response = await axios.post(
+            `${constants.apiUrl}/users`,
+            JSON.stringify(vals),
+            {
+              headers: { "Content-Type": "application/json" },
+              withCredentials: true,
+            }
+          );
+          // await (
+          //   await fetch(`${constants.apiUrl}/users`, {
+          //     method: "POST",
+          //     credentials: "include",
+          //     headers: {
+          //       "Content-Type": "application/json",
+          //     },
+          //     body: JSON.stringify(vals),
+          //   })
+          // ).json();
 
           return response;
         } catch (err: any) {
@@ -48,6 +57,7 @@ export default function Signup() {
       }}
     >
       {({ isSubmitting }) => (
+        // @ts-ignore
         <VStack
           as={Form}
           w={{ base: "90%", md: "500px" }}

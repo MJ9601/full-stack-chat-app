@@ -8,6 +8,7 @@ import config from "config";
 import logger from "./logger";
 import EVENTS from "./EVENTS";
 import { version } from "../../package.json";
+import socketConfig from "./socket.config";
 
 export default function serverConfig() {
   const app = express();
@@ -28,7 +29,7 @@ export default function serverConfig() {
   app.use(express.json());
   app.use(cors({ origin, credentials: true }));
 
-  io.on(EVENTS.CONNECTION, (socket) => {});
+  socketConfig({ io });
 
   server.listen(port, () =>
     logger.info(

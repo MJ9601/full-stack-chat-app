@@ -12,6 +12,7 @@ import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import constants from "../../../constants";
+import axios from "axios";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -30,16 +31,24 @@ export default function Login() {
       actions.resetForm();
       try {
         // console.log(config.get("apiUrl"));
-        const response = await (
-          await fetch(`${constants.apiUrl}/sessions`, {
-            method: "POST",
-            credentials: "include",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(vals),
-          })
-        ).json();
+        const response = await axios.post(
+          `${constants.apiUrl}/sessions`,
+          JSON.stringify(vals),
+          {
+            withCredentials: true,
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+        // await (
+        //   await fetch(`${constants.apiUrl}/sessions`, {
+        //     method: "POST",
+        //     credentials: "include",
+        //     headers: {
+        //       "Content-Type": "application/json",
+        //     },
+        //     body: JSON.stringify(vals),
+        //   })
+        // ).json();
         return response;
       } catch (err: any) {
         alert(err);
