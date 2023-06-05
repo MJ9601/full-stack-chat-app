@@ -39,16 +39,9 @@ export default function Login() {
             headers: { "Content-Type": "application/json" },
           }
         );
-        // await (
-        //   await fetch(`${constants.apiUrl}/sessions`, {
-        //     method: "POST",
-        //     credentials: "include",
-        //     headers: {
-        //       "Content-Type": "application/json",
-        //     },
-        //     body: JSON.stringify(vals),
-        //   })
-        // ).json();
+
+        navigate("/");
+
         return response;
       } catch (err: any) {
         alert(err);

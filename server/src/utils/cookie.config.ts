@@ -5,8 +5,8 @@ export const accessTokenOptions: CookieOptions = {
   httpOnly: true,
   domain: "localhost",
   path: "/",
-  sameSite: "lax",
-  secure: false,
+  sameSite: process.env.NODE_ENV == "production" ? "none" : "lax",
+  secure: process.env.NODE_ENV == "production",
 };
 
 export const refreshTokenOptions: CookieOptions = {

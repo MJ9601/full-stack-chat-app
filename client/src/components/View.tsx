@@ -2,6 +2,8 @@ import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
+import PrivateRoute from "./common/PrivateRoute";
+import Home from "./pages/Home";
 
 // const Login = lazy(() => import("./pages/auth/Login"));
 // const Signup = lazy(() => import("./pages/auth/Signup"));
@@ -12,10 +14,12 @@ export default function View() {
       {/* <Suspense fallback={<></>} /> */}
       <Routes>
         <Route path="/">
-          <Route path="/" element={<Login />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Signup />} />
           <Route path="*" element={<Login />} />
+          <Route element={<PrivateRoute />}>
+            <Route path="/" element={<Home />} />
+          </Route>
         </Route>
       </Routes>
     </>

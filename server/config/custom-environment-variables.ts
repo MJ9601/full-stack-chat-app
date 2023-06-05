@@ -5,4 +5,5 @@ export default {
   accTokenPubKey: "ACC_TOKEN_PUB_KEY_RSA",
   refTokenPriKey: "REF_TOKEN_PRI_KEY_RSA",
   refTokenPubKey: "REF_TOKEN_PUB_KEY_RSA",
+  nodeEnv: "NODE_ENV"
 };

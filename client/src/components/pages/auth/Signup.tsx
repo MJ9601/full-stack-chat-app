@@ -50,8 +50,10 @@ export default function Signup() {
           //   })
           // ).json();
 
+          navigate("/login");
           return response;
         } catch (err: any) {
+          alert("Invalid Username!");
           return err.message;
         }
       }}
