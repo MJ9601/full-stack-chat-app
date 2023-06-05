@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { SessionUserSchema } from "../schemas/user.schema";
 import { validateUsernameAndPassword } from "../services/session.service";
-import logger from "../utils/logger";
 
 export const createSessionController = async (
   req: Request<{}, {}, SessionUserSchema>,
@@ -17,6 +16,8 @@ export const createSessionController = async (
 
     return res.status(200).send(body);
   } catch (err: any) {
-    return res.status(500).send("Server Error!!");
+    return res
+      .status(500)
+      .send({ msg: "Server Error!!", msgErr: err.message, codeErr: err });
   }
 };
