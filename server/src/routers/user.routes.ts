@@ -18,6 +18,6 @@ router.post(
 );
 
 // getMe
-router.get("/me", [reqRateController(60, 20), requiredUser], getMeController);
+router.get("/me", [reqRateController(20, 10), requiredUser], getMeController);
 
 export default router;

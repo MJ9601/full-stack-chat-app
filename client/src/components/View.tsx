@@ -14,7 +14,7 @@ export default function View() {
   const { loading, hitLim, setHitLim } = useAuth();
   useEffect(() => {
     if (hitLim) {
-      const timer = setTimeout(() => setHitLim(false), 60000);
+      const timer = setTimeout(() => setHitLim(false), 20000);
       return () => clearTimeout(timer);
     }
   }, [hitLim]);
@@ -23,7 +23,7 @@ export default function View() {
   ) : (
     <>
       {hitLim ? (
-        <Loading msg={"load"} />
+        <Loading msg={"20"} />
       ) : (
         <Routes>
           <Route path="/">

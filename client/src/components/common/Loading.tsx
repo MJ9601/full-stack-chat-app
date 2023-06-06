@@ -8,7 +8,7 @@ export default function Loading({ msg }: { msg?: string }) {
       <div className="loading-spinner-dark"></div>
       {msg && (
         <Text mt={"10"} color={"red.500"}>
-          Too Many Request!!, Please try again Later.
+          Too Many Request!! Please try again after {msg}s.
         </Text>
       )}
     </div>
@@ -17,7 +17,7 @@ export default function Loading({ msg }: { msg?: string }) {
       <div className="loading-spinner"></div>
       {msg && (
         <Text mt={"10"} color={"red.500"}>
-          Too Many Request!!, Please try again Later.
+          Too Many Request!! Please try again after {msg}s.
         </Text>
       )}
     </div>
