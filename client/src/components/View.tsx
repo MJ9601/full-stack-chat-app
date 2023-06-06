@@ -4,14 +4,18 @@ import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
 import PrivateRoute from "./common/PrivateRoute";
 import Home from "./pages/Home";
+import { useAuth } from "./context/authContext";
+import Loading from "./common/Loading";
 
 // const Login = lazy(() => import("./pages/auth/Login"));
 // const Signup = lazy(() => import("./pages/auth/Signup"));
 
 export default function View() {
-  return (
+  const { logged } = useAuth();
+  return logged == null ? (
+    <Loading />
+  ) : (
     <>
-      {/* <Suspense fallback={<></>} /> */}
       <Routes>
         <Route path="/">
           <Route path="login" element={<Login />} />

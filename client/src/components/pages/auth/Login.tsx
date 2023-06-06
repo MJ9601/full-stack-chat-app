@@ -14,7 +14,6 @@ import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import constants from "../../../constants";
 import axios from "axios";
-import { useAuth } from "../../context/authContext";
 
 export default function Login() {
   const navigate = useNavigate();

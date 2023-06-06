@@ -1,10 +1,10 @@
 import axios from "axios";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useLayoutEffect, useState } from "react";
 import constants from "../../constants";
 import { useNavigate } from "react-router-dom";
 
 interface Context {
-  logged: boolean | (() => Promise<boolean>);
+  logged?: boolean | (() => Promise<boolean>);
   setLogged: (input: boolean) => void;
 }
 
@@ -15,7 +15,7 @@ const LogContext = createContext<Context>({
         withCredentials: true,
       });
 
-      return true;
+      return response.status == 200 ? true : false;
     } catch (error: any) {
       console.log({ msg: error.message, error });
       return false;
@@ -38,7 +38,7 @@ export default function LogProvider(props: any) {
     }
   });
   const navigate = useNavigate();
-  useEffect(() => {
+  useLayoutEffect(() => {
     const setRoute = async () => {
       if (!(await logged)) navigate("/login");
       else navigate("/");
