@@ -6,7 +6,8 @@
     transform: rotate(360deg);
   }
 }
-.loading-spinner {
+.loading-spinner,
+.loading-spinner-dark {
   width: 100px;
   height: 100px;
   border: 15px solid #f3f3f3; /* Light grey */
@@ -17,15 +18,11 @@
 
 .spinner-container {
   display: grid;
-  justify-content: center;
-  align-items: center;
+  place-items: center;
+  align-content: center;
   height: 100vh;
 }
 .loading-spinner-dark {
-  width: 100px;
-  height: 100px;
   border: 15px solid #383636;
   border-top: 15px solid #f3f3f3; /* Light grey */ /* Blue */
-  border-radius: 50%;
-  animation: spinner 1.5s linear infinite;
 }

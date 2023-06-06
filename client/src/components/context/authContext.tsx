@@ -6,9 +6,15 @@ import { useNavigate } from "react-router-dom";
 interface Context {
   logged?: string | boolean | (() => Promise<boolean>);
   setLogged: (input: boolean) => void;
+  loading: boolean;
+  hitLim: boolean;
+  setHitLim: (input: boolean) => void;
 }
 
 const LogContext = createContext<Context>({
+  hitLim: false,
+  setHitLim: () => false,
+  loading: true,
   logged: async (): Promise<boolean> => {
     try {
       const response = await axios.get(`${constants.apiUrl}/users/me`, {
@@ -25,6 +31,8 @@ const LogContext = createContext<Context>({
 });
 
 export default function LogProvider(props: any) {
+  const [loading, setLoading] = useState(true);
+  const [hitLim, setHitLim] = useState(false);
   const [logged, setLogged] = useState(async () => {
     try {
       const response = await axios.get(`${constants.apiUrl}/users/me`, {
@@ -41,13 +49,20 @@ export default function LogProvider(props: any) {
   useLayoutEffect(() => {
     const setRoute = async () => {
       if (!(await logged)) navigate("/login");
-      else if ((await logged) == "reqLimitation")
-        alert("Too Many Request!!, Try again after a short time");
-      else navigate("/");
+      else if ((await logged) == "reqLimitation") {
+        setHitLim(true);
+      } else navigate("/");
+
+      setLoading(false);
     };
     setRoute();
   }, [logged]);
-  return <LogContext.Provider value={{ logged, setLogged }} {...props} />;
+  return (
+    <LogContext.Provider
+      value={{ loading, logged, setLogged, hitLim, setHitLim }}
+      {...props}
+    />
+  );
 }
 
 export const useAuth = () => useContext(LogContext);

@@ -1,4 +1,4 @@
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
@@ -11,21 +11,31 @@ import Loading from "./common/Loading";
 // const Signup = lazy(() => import("./pages/auth/Signup"));
 
 export default function View() {
-  const { logged } = useAuth();
-  return logged == null ? (
+  const { loading, hitLim, setHitLim } = useAuth();
+  useEffect(() => {
+    if (hitLim) {
+      const timer = setTimeout(() => setHitLim(false), 60000);
+      return () => clearTimeout(timer);
+    }
+  }, [hitLim]);
+  return loading ? (
     <Loading />
   ) : (
     <>
-      <Routes>
-        <Route path="/">
-          <Route path="login" element={<Login />} />
-          <Route path="register" element={<Signup />} />
-          <Route path="*" element={<Login />} />
-          <Route element={<PrivateRoute />}>
-            <Route path="/" element={<Home />} />
+      {hitLim ? (
+        <Loading msg={"load"} />
+      ) : (
+        <Routes>
+          <Route path="/">
+            <Route path="login" element={<Login />} />
+            <Route path="register" element={<Signup />} />
+            <Route path="*" element={<Login />} />
+            <Route element={<PrivateRoute />}>
+              <Route path="/" element={<Home />} />
+            </Route>
           </Route>
-        </Route>
-      </Routes>
+        </Routes>
+      )}
     </>
   );
 }
