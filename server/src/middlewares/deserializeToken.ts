@@ -14,7 +14,6 @@ export default async function deserializeToken(
     get(req, "cookies.accessToken") ||
     get(req, "headers.authorization", "").replace(/^Bearer\s/, "");
 
-
   // logger.info({ accessToken });
 
   const refreshToken =
@@ -31,6 +30,8 @@ export default async function deserializeToken(
 
   if (decoded) {
     res.locals.user = decoded;
+    res.setHeader("x-refresh", refreshToken);
+    res.setHeader("authorization", `Bearer ${accessToken}`);
     return next();
   }
 
@@ -40,6 +41,8 @@ export default async function deserializeToken(
     if (newAccessToken) {
       res.cookie("accessToken", newAccessToken, accessTokenOptions);
 
+      res.setHeader("x-refresh", refreshToken);
+      res.setHeader("authorization", `Bearer ${newAccessToken}`);
       const results = verifyJwt({
         token: newAccessToken as string,
         isAccToken: true,

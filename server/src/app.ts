@@ -9,5 +9,6 @@ const s = serverConfig();
 s.app.get("/", (_, res: express.Response) => res.sendStatus(200));
 
 // routes
+
 s.app.use(deserializeToken);
 s.app.use("/api", mainRoute);

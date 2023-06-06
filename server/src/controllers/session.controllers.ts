@@ -46,6 +46,9 @@ export const createSessionController = async (
 
     res.cookie("accessToken", accessToken, accessTokenOptions);
     res.cookie("refreshToken", refreshToken, refreshTokenOptions);
+    res.setHeader("x-refresh", refreshToken);
+    res.setHeader("authorization", `Bearer ${accessToken}`);
+
 
     return res.status(200).send({ accessToken, refreshToken });
   } catch (err: any) {
