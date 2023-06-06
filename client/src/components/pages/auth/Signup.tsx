@@ -1,4 +1,4 @@
-import { VStack, Button, ButtonGroup, Heading } from "@chakra-ui/react";
+import { VStack, Button, ButtonGroup, Heading, Text } from "@chakra-ui/react";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import { Form, Formik } from "formik";
 import * as yup from "yup";
@@ -7,9 +7,12 @@ import { useNavigate } from "react-router-dom";
 // import config from "config";
 import constants from "../../../constants";
 import axios from "axios";
+import { useState } from "react";
+import theme from "../../../theme";
 
 export default function Signup() {
   const navigate = useNavigate();
+  const [err, setErr] = useState(null);
   return (
     <Formik
       initialValues={{ username: "", password: "", confirmedPassword: "" }}
@@ -27,8 +30,6 @@ export default function Signup() {
       })}
       onSubmit={async (values, actions) => {
         const vals = { ...values };
-        alert(JSON.stringify(values, null, 2));
-        console.log(vals);
         actions.resetForm();
         try {
           const response = await axios.post(
@@ -51,9 +52,11 @@ export default function Signup() {
           // ).json();
 
           navigate("/login");
+          if (response.status >= 400) setErr(response.data);
           return response;
         } catch (err: any) {
-          alert("Invalid Username!");
+          console.log(err.response.data);
+          setErr(err.response.data);
           return err.message;
         }
       }}
@@ -69,6 +72,11 @@ export default function Signup() {
           h="100vh"
         >
           <Heading>Sign Up</Heading>
+          {err && (
+            <Text pt={3} color={"red.400"}>
+              {err}
+            </Text>
+          )}
           <TextField
             // @ts-ignore
             name="username"

@@ -16,11 +16,11 @@ async function main() {
 
   // redis test
   const redisClient = await redisConfig();
-  const new_ = await redisClient.set("new", "new2");
-  const new__ = await redisClient.set("newNew", "new32");
+  const new_ = await redisClient!.set("new", "new2");
+  const new__ = await redisClient!.set("newNew", "new32");
 
-  const valr = await redisClient.get("newNew");
-  console.log(valr);
+  const valr = await redisClient!.get("newNew");
+  console.log("Redis test ==> " + valr);
 }
 
 main();

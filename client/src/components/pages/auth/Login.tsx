@@ -7,8 +7,9 @@ import {
   Heading,
   ButtonGroup,
   FormErrorMessage,
+  Text,
 } from "@chakra-ui/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
@@ -17,6 +18,7 @@ import axios from "axios";
 
 export default function Login() {
   const navigate = useNavigate();
+  const [err, setErr] = useState(null);
   const formik = useFormik({
     initialValues: { username: "", password: "" },
     validationSchema: Yup.object({
@@ -42,10 +44,10 @@ export default function Login() {
         );
 
         navigate("/");
-
+        if (response.status >= 400) setErr(response.data);
         return response;
       } catch (err: any) {
-        alert(err);
+        setErr(err.response.data);
         return err.message;
       }
     },
@@ -63,6 +65,11 @@ export default function Login() {
         onSubmit={formik.handleSubmit as any}
       >
         <Heading>Log in</Heading>
+        {err && (
+          <Text pt={3} color={"red.400"}>
+            {err}
+          </Text>
+        )}
         <FormControl
           isInvalid={!!formik.errors.username && formik.touched.username}
         >

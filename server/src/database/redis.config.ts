@@ -1,7 +1,8 @@
-import { createClient } from "redis";
-import Redis from 'ioredis'
+// import { createClient } from "redis";
+import Redis from "ioredis";
 import config from "config";
 import logger from "../utils/logger";
+// import logger from "../utils/logger";
 
 export default async function redisConfig() {
   const host = config.get<string>("redisHost");
@@ -18,8 +19,12 @@ export default async function redisConfig() {
 
   // redisClient.on("connect", () => logger.info("redis db connected!!"));
 
-  const redisClient = new Redis({host, port});
-  
-
-  return redisClient;
+  try {
+    const redisClient = new Redis({ host, port });
+    logger.info("Redis db is connected!!");
+    return redisClient;
+  } catch (err: any) {
+    logger.error(err);
+    return;
+  }
 }
