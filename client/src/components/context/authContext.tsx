@@ -4,7 +4,7 @@ import constants from "../../constants";
 import { useNavigate } from "react-router-dom";
 
 interface Context {
-  logged?: boolean | (() => Promise<boolean>);
+  logged?: string | boolean | (() => Promise<boolean>);
   setLogged: (input: boolean) => void;
 }
 
@@ -34,13 +34,15 @@ export default function LogProvider(props: any) {
       if (response.status === 200) return true;
     } catch (error: any) {
       console.log({ msg: error.message, error });
-      return false;
+      return error.response.status == 429 ? "reqLimitation" : false;
     }
   });
   const navigate = useNavigate();
   useLayoutEffect(() => {
     const setRoute = async () => {
       if (!(await logged)) navigate("/login");
+      else if ((await logged) == "reqLimitation")
+        alert("Too Many Request!!, Try again after a short time");
       else navigate("/");
     };
     setRoute();

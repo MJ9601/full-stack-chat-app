@@ -8,7 +8,7 @@ export default function requiredUser(
 ) {
   const user = res.locals.user;
 
-  logger.info(user);
+  // logger.info(user);
 
   if (!user) return res.sendStatus(403);
 
