@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import logger from "../utils/logger";
 
 export default function requiredUser(
-  _: Request,
+  req: Request,
   res: Response,
   next: NextFunction
 ) {

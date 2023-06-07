@@ -25,6 +25,8 @@ export default async function serverConfig() {
     },
   });
 
+  io.engine.use(helmet());
+
   app.use(helmet());
   app.use(express.json());
   app.use(cookieParser());
