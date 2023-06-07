@@ -1,12 +1,14 @@
 import { Request, Response, NextFunction } from "express";
 import logger from "../utils/logger";
+import { get } from "lodash";
 
 export default function requiredUser(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
-  const user = res.locals.user;
+  // console.log(get(req, "user"));
+  const user = res.locals.user || get(req, "user");
 
   // logger.info(user);
 

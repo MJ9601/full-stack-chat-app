@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { get } from "lodash";
+import { get, set } from "lodash";
 import { verifyJwt } from "../utils/jwt.utils";
 import { reIssueNewAccessToken } from "../services/session.service";
 import { accessTokenOptions } from "../utils/cookie.config";
@@ -15,6 +15,7 @@ export default async function deserializeToken(
     get(req, "headers.authorization", "").replace(/^Bearer\s/, "");
 
   // console.log({
+  //   accessToken,
   //   token: req.headers.cookie,
   //   token2: req.headers.authorization,
   //   token3: req.headers["x-refresh"],
@@ -34,6 +35,7 @@ export default async function deserializeToken(
 
   if (decoded) {
     res.locals.user = decoded;
+    set(req, "user", decoded);
     res.setHeader("x-refresh", refreshToken);
     res.setHeader("authorization", `Bearer ${accessToken}`);
     return next();
@@ -52,6 +54,7 @@ export default async function deserializeToken(
         verifyKeyName: "accTokenPubKey",
       });
       res.locals.user = results.decoded;
+      set(req, "user", results.decoded);
 
       return next();
     }
