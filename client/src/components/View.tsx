@@ -14,7 +14,7 @@ export default function View() {
   const { loading, hitLim, setHitLim } = useAuth();
   useEffect(() => {
     if (hitLim) {
-      const timer = setTimeout(() => setHitLim(false), 20000);
+      const timer = setTimeout(() => setHitLim(false), 50000);
       return () => clearTimeout(timer);
     }
   }, [hitLim]);

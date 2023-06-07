@@ -2,9 +2,10 @@ import axios from "axios";
 import { createContext, useContext, useLayoutEffect, useState } from "react";
 import constants from "../../constants";
 import { useNavigate } from "react-router-dom";
+import { User } from "./chatInfo";
 
 interface Context {
-  logged?: string | boolean | (() => Promise<boolean>);
+  logged?: string | boolean | (() => Promise<boolean | User>);
   setLogged: (input: boolean) => void;
   loading: boolean;
   hitLim: boolean;
@@ -21,7 +22,7 @@ const LogContext = createContext<Context>({
         withCredentials: true,
       });
 
-      return response.status == 200 ? true : false;
+      return response.status == 200 ? response.data : false;
     } catch (error: any) {
       console.log({ msg: error.message, error });
       return false;
@@ -39,7 +40,7 @@ export default function LogProvider(props: any) {
         withCredentials: true,
       });
 
-      if (response.status === 200) return true;
+      if (response.status === 200) return response.data;
     } catch (error: any) {
       console.log({ msg: error.message, error });
       return error.response.status == 429 ? "reqLimitation" : false;
