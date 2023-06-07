@@ -16,7 +16,8 @@ export default function Signup() {
   return (
     <Formik
       initialValues={{ username: "", password: "", confirmedPassword: "" }}
-      validationSchema={yup.object({
+      validationSchema={
+        yup.object({
         username: yup.string().required("username is required!").email(),
         password: yup
           .string()

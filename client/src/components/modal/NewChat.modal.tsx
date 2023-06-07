@@ -8,9 +8,10 @@ import {
   ModalCloseButton,
   Button,
   Divider,
-  Input,
-  FormLabel,
 } from "@chakra-ui/react";
+import { Form, Formik } from "formik";
+import TextField from "../common/TextField";
+import * as yup from "yup";
 
 export default function NewChatModal({
   isOpen,
@@ -26,15 +27,35 @@ export default function NewChatModal({
         <ModalHeader>Start A Conversation</ModalHeader>
         <ModalCloseButton />
         <Divider />
-        <ModalBody pt="1.5rem">
-          <FormLabel>Enter his/her Email:</FormLabel>
-          <Input type="email" />
-        </ModalBody>
-        <ModalFooter>
-          <Button colorScheme="teal" onClick={onClose}>
-            Start
-          </Button>
-        </ModalFooter>
+        <Formik
+          initialValues={{ username: "" }}
+          validationSchema={yup.object({
+            username: yup.string().required("username is required!").email(),
+          })}
+          onSubmit={async (values, actions) => {
+            alert(JSON.stringify(values));
+            actions.resetForm();
+            onClose();
+          }}
+        >
+          <Form>
+            <ModalBody pt="1.5rem">
+              <TextField
+                // @ts-ignore
+                name="username"
+                type="email"
+                label="Username"
+                placeholder="Enter username"
+                autoComplete="off"
+              />
+            </ModalBody>
+            <ModalFooter>
+              <Button colorScheme="teal" type="submit">
+                Start
+              </Button>
+            </ModalFooter>
+          </Form>
+        </Formik>
       </ModalContent>
     </Modal>
   );
