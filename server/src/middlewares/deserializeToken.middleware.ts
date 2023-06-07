@@ -29,7 +29,7 @@ export default async function deserializeToken(
 
   const { decoded, expired } = verifyJwt({
     token: accessToken,
-    isAccToken: true,
+    verifyKeyName: "accTokenPubKey",
   });
 
   if (decoded) {
@@ -49,7 +49,7 @@ export default async function deserializeToken(
       res.setHeader("authorization", `Bearer ${newAccessToken}`);
       const results = verifyJwt({
         token: newAccessToken as string,
-        isAccToken: true,
+        verifyKeyName: "accTokenPubKey",
       });
       res.locals.user = results.decoded;
 

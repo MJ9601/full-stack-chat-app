@@ -34,13 +34,13 @@ export const createSessionController = async (
 
     const accessToken = signJwt({
       tokenPayload: { ...omit(user, ["password"]), session: newSession.id },
-      isAccToken: true,
+      signKeyName: "accTokenPriKey",
       options: { expiresIn: config.get<string>("accTokenTimeToLive") },
     });
 
     const refreshToken = signJwt({
       tokenPayload: { ...omit(user, ["password"]), session: newSession.id },
-      isAccToken: false,
+      signKeyName: "refTokenPriKey",
       options: { expiresIn: config.get<string>("refTokenTimeToLive") },
     });
 
@@ -48,7 +48,6 @@ export const createSessionController = async (
     res.cookie("refreshToken", refreshToken, refreshTokenOptions);
     res.setHeader("x-refresh", refreshToken);
     res.setHeader("authorization", `Bearer ${accessToken}`);
-
 
     return res.status(200).send({ accessToken, refreshToken });
   } catch (err: any) {

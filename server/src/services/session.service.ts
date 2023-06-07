@@ -22,7 +22,7 @@ export const deleteOneUserSessions = async (
 ) => prisma.session.deleteMany(input);
 
 export const reIssueNewAccessToken = async (token: string) => {
-  const { decoded } = verifyJwt({ token, isAccToken: false });
+  const { decoded } = verifyJwt({ token, verifyKeyName: "refTokenPubKey" });
   if (!decoded || !get(decoded, "session")) return false;
 
   const sessionId = get(decoded, "session");
@@ -34,7 +34,7 @@ export const reIssueNewAccessToken = async (token: string) => {
 
   const newToken = signJwt({
     tokenPayload: { ...omit(user, ["password"]), session: session.id },
-    isAccToken: true,
+    signKeyName: "accTokenPriKey",
     options: { expiresIn: config.get("accTokenTimeToLive") },
   });
 
