@@ -32,7 +32,10 @@ export default async function authSocketMiddleware(
     verifyKeyName: "accTokenPubKey",
   });
 
-  if (decoded) return next();
+  if (decoded) {
+    set(socket, "user", decoded);
+    return next();
+  }
 
   if (expired && refreshToken) {
     const newAccessToken = await reIssueNewAccessToken(refreshToken);
@@ -48,6 +51,12 @@ export default async function authSocketMiddleware(
       `refreshToken=${refreshToken}; accessToken=${newAccessToken}`
     );
 
+    const results = verifyJwt({
+      token: newAccessToken as string,
+      verifyKeyName: "accTokenPubKey",
+    });
+
+    set(socket, "user", results.decoded);
     // socket.handshake.headers[
     //   "set-cookie"
     // ]! = `refreshToken=${refreshToken}; accessToken=${newAccessToken}`;

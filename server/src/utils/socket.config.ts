@@ -3,6 +3,8 @@ import logger from "./logger";
 import EVENTS from "./EVENTS";
 
 import authSocket from "../middlewares/socket/authSocket.middleware";
+import { get } from "lodash";
+import stabilizerSocket from "../middlewares/socket/stabilizer.middleware";
 
 export default function socketConfig({ io }: { io: Server }) {
   logger.info("Sockets enbled!!");
@@ -14,8 +16,9 @@ export default function socketConfig({ io }: { io: Server }) {
   //   requiredUser(req as Request, res as Response, next)
   // );
   io.use((socket: Socket, next) => authSocket(socket, next));
+  io.use(stabilizerSocket);
 
   io.on(EVENTS.CONNECTION, (socket: Socket) => {
-    logger.info(`User connected, socket id => ${socket.id}`);
+    logger.info(`Socket id => ${socket.id} \n`);
   });
 }
