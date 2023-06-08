@@ -5,6 +5,8 @@ import EVENTS from "./EVENTS";
 import authSocket from "../middlewares/socket/authSocket.middleware";
 import { get } from "lodash";
 import stabilizerSocket from "../middlewares/socket/stabilizer.middleware";
+import { createPrivateRoomHandler } from "../controllers/socket/room.controllers";
+import { Callback } from "ioredis";
 
 export default function socketConfig({ io }: { io: Server }) {
   logger.info("Sockets enbled!!");
@@ -20,5 +22,12 @@ export default function socketConfig({ io }: { io: Server }) {
 
   io.on(EVENTS.CONNECTION, (socket: Socket) => {
     logger.info(`Socket id => ${socket.id} \n`);
+
+    // create private chat
+    socket.on(
+      EVENTS.CLIENT.CREATE_ROOM,
+      (socket: Socket) => (username: string, cb: Callback) =>
+        createPrivateRoomHandler(socket, username, cb)
+    );
   });
 }

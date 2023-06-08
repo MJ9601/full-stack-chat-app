@@ -1,8 +1,8 @@
 import { Socket } from "socket.io";
 import { ExtendedError } from "socket.io/dist/namespace";
 import { set, get } from "lodash";
-import redisClient from "../../database/redis.config";
 import logger from "../../utils/logger";
+import { setOnRedis } from "../../services/redis/redis.service";
 
 export default async function stabilizerSocket(
   socket: Socket,
@@ -10,7 +10,8 @@ export default async function stabilizerSocket(
 ) {
   const email = get(socket, "user.username")! as string;
   logger.info(`username => ${email}`);
-  await redisClient!.hset(email, { key: email });
+  // await redisClient!.set(email, get(socket, "user.id")!);
+  await setOnRedis(email, get(socket, "user.id")!);
 
   next();
 }

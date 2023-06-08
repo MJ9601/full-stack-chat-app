@@ -49,10 +49,11 @@ export const createSessionController = async (
     res.setHeader("x-refresh", refreshToken);
     res.setHeader("authorization", `Bearer ${accessToken}`);
 
-    return res.status(200).send({ accessToken, refreshToken });
+    return res.status(201).send({ accessToken, refreshToken });
   } catch (err: any) {
-    return res
-      .status(500)
-      .send({ msg: "Server Error!!", msgErr: err.message, codeErr: err });
+    return res.status(500).send({
+      msgErr: err.message,
+      err,
+    });
   }
 };
