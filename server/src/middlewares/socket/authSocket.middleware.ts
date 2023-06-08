@@ -3,21 +3,29 @@ import { ExtendedError } from "socket.io/dist/namespace";
 import { verifyJwt } from "../../utils/jwt.utils";
 import { reIssueNewAccessToken } from "../../services/session.service";
 import { set, get } from "lodash";
+import { parse } from "cookie";
+import logger from "../../utils/logger";
 
 export default async function authSocketMiddleware(
   socket: Socket,
   next: (err?: ExtendedError | undefined) => void
 ) {
-  const tokens = get(socket.request.headers, "cookie")!.split("; ");
+  const cookies = parse(String(get(socket.request.headers, "cookie")));
+  // console.log(cookies);
 
-  const { accessToken, refreshToken } = tokens.reduce((pre, cur) => {
-    const [key, value] = cur.split("=");
-    return { ...pre, [key]: value };
-  }, {}) as { accessToken?: string; refreshToken?: string };
+  if (!Object.keys(cookies).length) {
+    logger.error("bad request!, Socket disconnected");
+    return next(new Error("UnAuthorized!!"));
+  }
 
-  // console.log({ accessToken, refreshToken });
+  // console.log(cookies);
 
-  if (!accessToken && !refreshToken) return next(new Error("UnAuthorized!!"));
+  const { accessToken, refreshToken } = cookies;
+
+  if (!accessToken && !refreshToken) {
+    logger.error("Socket disconnected!!");
+    return next(new Error("UnAuthorized!!"));
+  }
 
   const { decoded, expired } = verifyJwt({
     token: accessToken || "",
@@ -29,19 +37,25 @@ export default async function authSocketMiddleware(
   if (expired && refreshToken) {
     const newAccessToken = await reIssueNewAccessToken(refreshToken);
 
+    if (!newAccessToken) {
+      logger.error("Socket disconnected!!");
+      return next(new Error("UnAuthorized!!"));
+    }
+
     set(
       socket.handshake.headers,
-      "set-cookie",
+      "cookie",
       `refreshToken=${refreshToken}; accessToken=${newAccessToken}`
     );
+
     // socket.handshake.headers[
     //   "set-cookie"
     // ]! = `refreshToken=${refreshToken}; accessToken=${newAccessToken}`;
-    socket.handshake.headers.cookie = `refreshToken=${refreshToken}; accessToken=${newAccessToken}`;
+    // socket.handshake.headers.cookie = `refreshToken=${refreshToken}; accessToken=${newAccessToken}`;
 
     // console.log({ setCookie: socket.handshake.headers["set-cookie"] });
 
-    const newTokens = get(socket.request.headers, "cookie");
+    // const newTokens = get(socket.request.headers, "cookie");
     // console.log({ newTokens });
 
     return next();

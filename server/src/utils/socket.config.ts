@@ -2,10 +2,7 @@ import { Server, Socket } from "socket.io";
 import logger from "./logger";
 import EVENTS from "./EVENTS";
 
-import deserializeToken from "../middlewares/deserializeToken.middleware";
-import requiredUser from "../middlewares/requiredUser.middleware";
 import authSocket from "../middlewares/socket/authSocket.middleware";
-import { Request, Response } from "express";
 
 export default function socketConfig({ io }: { io: Server }) {
   logger.info("Sockets enbled!!");

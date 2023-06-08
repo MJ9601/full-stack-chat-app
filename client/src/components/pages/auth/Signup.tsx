@@ -5,10 +5,10 @@ import * as yup from "yup";
 import TextField from "../../common/TextField";
 import { useNavigate } from "react-router-dom";
 // import config from "config";
-import constants from "../../../constants";
+import constants from "../../../utils/constants";
 import axios from "axios";
 import { useState } from "react";
-import theme from "../../../theme";
+import theme from "../../../utils/theme";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -16,8 +16,7 @@ export default function Signup() {
   return (
     <Formik
       initialValues={{ username: "", password: "", confirmedPassword: "" }}
-      validationSchema={
-        yup.object({
+      validationSchema={yup.object({
         username: yup.string().required("username is required!").email(),
         password: yup
           .string()

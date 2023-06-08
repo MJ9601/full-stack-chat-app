@@ -13,7 +13,7 @@ import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
-import constants from "../../../constants";
+import constants from "../../../utils/constants";
 import axios from "axios";
 
 export default function Login() {

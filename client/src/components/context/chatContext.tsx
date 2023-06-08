@@ -1,14 +1,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { Room } from "./chatInfo";
+import { ChatContext } from "./context";
 
-interface Context {
-  rooms: Room[] | [];
-  setRooms: (input: Room[]) => void;
-  curRoom?: Room | {};
-  setCurRoom: (input: Room) => void;
-}
 
-const ChatContext = createContext<Context>({
+const ChatContext = createContext<ChatContext>({
   rooms: [],
   setRooms: () => false,
   curRoom: {},
