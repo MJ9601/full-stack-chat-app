@@ -5,6 +5,8 @@ import { reIssueNewAccessToken } from "../../services/session.service";
 import { set, get } from "lodash";
 import { parse } from "cookie";
 import logger from "../../utils/logger";
+import verifyIpAndAgent from "../../utils/verifyIpAndAgent";
+import { Request } from "express";
 
 export default async function authSocketMiddleware(
   socket: Socket,
@@ -33,12 +35,26 @@ export default async function authSocketMiddleware(
   });
 
   if (decoded) {
+    const verifiedBrowser = verifyIpAndAgent({
+      req: socket.request as Request,
+      ip: get(decoded, "userIp")!,
+      agent: get(decoded, "userAgent")!,
+    });
+
+    if (!verifiedBrowser) {
+      logger.error("Socket disconnected!!");
+      return next(new Error("UnAuthorized!!"));
+    }
+
     set(socket, "user", decoded);
     return next();
   }
 
   if (expired && refreshToken) {
-    const newAccessToken = await reIssueNewAccessToken(refreshToken);
+    const newAccessToken = await reIssueNewAccessToken(
+      socket.request as Request,
+      refreshToken
+    );
 
     if (!newAccessToken) {
       logger.error("Socket disconnected!!");

@@ -4,6 +4,7 @@ import { verifyJwt } from "../utils/jwt.utils";
 import { reIssueNewAccessToken } from "../services/session.service";
 import { accessTokenOptions } from "../utils/cookie.config";
 import logger from "../utils/logger";
+import verifyIpAndAgent from "../utils/verifyIpAndAgent";
 
 export default async function deserializeToken(
   req: Request,
@@ -34,6 +35,14 @@ export default async function deserializeToken(
   });
 
   if (decoded) {
+    const verifiedBrowser = verifyIpAndAgent({
+      req,
+      ip: get(decoded, "userIp")!,
+      agent: get(decoded, "userAgent")!,
+    });
+
+    if (!verifiedBrowser) return next();
+
     res.locals.user = decoded;
     set(req, "user", decoded);
     res.setHeader("x-refresh", refreshToken);
@@ -42,7 +51,7 @@ export default async function deserializeToken(
   }
 
   if (expired && refreshToken) {
-    const newAccessToken = await reIssueNewAccessToken(refreshToken);
+    const newAccessToken = await reIssueNewAccessToken(req, refreshToken);
 
     if (newAccessToken) {
       res.cookie("accessToken", newAccessToken, accessTokenOptions);

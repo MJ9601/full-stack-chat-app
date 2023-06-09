@@ -9,6 +9,7 @@ import {
   accessTokenOptions,
   refreshTokenOptions,
 } from "../utils/cookie.config";
+import { setUserAndSessionOnRedis } from "../utils/socketActions/userAndSessionOnRedis.ts";
 
 export const createSessionController = async (
   req: Request<{}, {}, SessionUserSchema>,
@@ -43,6 +44,8 @@ export const createSessionController = async (
       signKeyName: "refTokenPriKey",
       options: { expiresIn: config.get<string>("refTokenTimeToLive") },
     });
+
+    await setUserAndSessionOnRedis(user, newSession, 16 * 60);
 
     res.cookie("accessToken", accessToken, accessTokenOptions);
     res.cookie("refreshToken", refreshToken, refreshTokenOptions);
