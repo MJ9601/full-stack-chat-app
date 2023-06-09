@@ -1,15 +1,15 @@
 import { Request, Response } from "express";
-import { SessionUserSchema } from "../schemas/user.schema";
-import { validateUsernameAndPassword } from "../services/user.service";
-import { createSession } from "../services/session.service";
-import { signJwt } from "../utils/jwt.utils";
+import { SessionUserSchema } from "../../schemas/user.schema";
+import { validateUsernameAndPassword } from "../../services/user.service";
+import { createSession } from "../../services/session.service";
+import { signJwt } from "../../utils/jwt.utils";
 import { omit } from "lodash";
 import config from "config";
 import {
   accessTokenOptions,
   refreshTokenOptions,
-} from "../utils/cookie.config";
-import { setUserAndSessionOnRedis } from "../utils/socketActions/userAndSessionOnRedis.ts";
+} from "../../utils/cookie.config";
+import { setUserAndSessionOnRedis } from "../../utils/socketActions/userAndSessionOnRedis.ts";
 
 export const createSessionController = async (
   req: Request<{}, {}, SessionUserSchema>,

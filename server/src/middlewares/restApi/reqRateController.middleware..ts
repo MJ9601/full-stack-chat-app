@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import redisClient from "../database/redis.config";
-import logger from "../utils/logger";
+import redisClient from "../../database/redis.config";
+import logger from "../../utils/logger";
 
 const reqRateController =
   (seconds: number, reqNum: number) =>

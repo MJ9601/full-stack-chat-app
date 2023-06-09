@@ -1,8 +1,5 @@
 import { Socket } from "socket.io";
 import { ExtendedError } from "socket.io/dist/namespace";
-import { set, get } from "lodash";
-import logger from "../../utils/logger";
-import { setOnRedis } from "../../services/redis/redis.service";
 
 export default async function stabilizerSocket(
   socket: Socket,

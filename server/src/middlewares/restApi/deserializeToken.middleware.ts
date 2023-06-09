@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import { get, set } from "lodash";
-import { verifyJwt } from "../utils/jwt.utils";
-import { reIssueNewAccessToken } from "../services/session.service";
-import { accessTokenOptions } from "../utils/cookie.config";
-import logger from "../utils/logger";
-import verifyIpAndAgent from "../utils/verifyIpAndAgent";
+import { verifyJwt } from "../../utils/jwt.utils";
+import { reIssueNewAccessToken } from "../../services/session.service";
+import { accessTokenOptions } from "../../utils/cookie.config";
+import logger from "../../utils/logger";
+import verifyIpAndAgent from "../../utils/verifyIpAndAgent";
 
 export default async function deserializeToken(
   req: Request,

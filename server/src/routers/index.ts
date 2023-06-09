@@ -1,7 +1,7 @@
 import { Router } from "express";
 import userRoutes from "./user.routes";
 import sessionRoutes from "./session.routes";
-import deserializeToken from "../middlewares/deserializeToken.middleware";
+import deserializeToken from "../middlewares/restApi/deserializeToken.middleware";
 
 const router = Router();
 

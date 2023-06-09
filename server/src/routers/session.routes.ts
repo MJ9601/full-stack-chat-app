@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { createSessionController } from "../controllers/session.controllers";
-import requestValidater from "../middlewares/requestValidater.middleware";
+import { createSessionController } from "../controllers/restApi/session.controllers";
+import requestValidater from "../middlewares/restApi/requestValidater.middleware";
 import { sessionUserSchema } from "../schemas/user.schema";
-import reqRateController from "../middlewares/reqRateController.middleware.";
+import reqRateController from "../middlewares/restApi/reqRateController.middleware.";
 
 const router = Router();
 

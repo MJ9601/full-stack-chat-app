@@ -2,11 +2,11 @@ import { Router } from "express";
 import {
   createUserController,
   getMeController,
-} from "../controllers/user.controllers";
-import requestValidater from "../middlewares/requestValidater.middleware";
+} from "../controllers/restApi/user.controllers";
+import requestValidater from "../middlewares/restApi/requestValidater.middleware";
 import { createUserSchema } from "../schemas/user.schema";
-import requiredUser from "../middlewares/requiredUser.middleware";
-import reqRateController from "../middlewares/reqRateController.middleware.";
+import requiredUser from "../middlewares/restApi/requiredUser.middleware";
+import reqRateController from "../middlewares/restApi/reqRateController.middleware.";
 
 const router = Router();
 
