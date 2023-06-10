@@ -1,6 +1,10 @@
 import { Socket } from "socket.io";
 import { get } from "lodash";
-import { getFromRedis } from "../../services/redis/redis.service";
+import {
+  getFromRedis,
+  hGetAllFromRedis,
+  hGetFromRedis,
+} from "../../services/redis/redis.service";
 import { Callback } from "ioredis";
 
 export const createPrivateRoomHandler = async (
@@ -23,7 +27,7 @@ export const createPrivateRoomHandler = async (
       return cb({ name: "403", message: "Room already exists!!" });
     }
 
-    const userFromRedis = await getFromRedis(username);
+    const userFromRedis = await hGetFromRedis(username, "id");
     if (!userFromRedis) {
       // const
     } else {

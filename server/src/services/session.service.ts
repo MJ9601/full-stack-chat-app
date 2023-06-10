@@ -10,6 +10,7 @@ import {
   getUserAndSessionFromRedis,
   setUserAndSessionOnRedis,
 } from "../utils/socketActions/userAndSessionOnRedis.ts";
+import logger from "../utils/logger";
 
 export const createSession = async (input: Prisma.SessionCreateArgs) =>
   prisma.session.create(input);
@@ -39,22 +40,28 @@ export const reIssueNewAccessToken = async (req: Request, token: string) => {
   if (!verifiedBrowser) return false;
 
   const sessionId = get(decoded, "session")!;
-  const userId = get(decoded, "id")!;
+  const username = get(decoded, "username")!;
 
   const { userRedis, sessionIdRedis } = await getUserAndSessionFromRedis(
-    userId,
+    username,
     sessionId
   );
 
   if (sessionIdRedis && userRedis) {
     const newToken = signJwt({
-      tokenPayload: { ...userRedis, session: sessionIdRedis },
+      tokenPayload: {
+        ...userRedis,
+        session: sessionIdRedis,
+        userIp: get(decoded, "userIp"),
+        userAgent: get(decoded, "userAgent"),
+      },
       signKeyName: "accTokenPriKey",
       options: { expiresIn: config.get("accTokenTimeToLive") },
     });
 
     return newToken;
   }
+  logger.info("-------");
 
   const session = await prisma.session.findUnique({ where: { id: sessionId } });
   if (!session || !session.valid) return false;
@@ -63,7 +70,12 @@ export const reIssueNewAccessToken = async (req: Request, token: string) => {
   if (!user) return false;
 
   const newToken = signJwt({
-    tokenPayload: { ...omit(user, ["password"]), session: session.id },
+    tokenPayload: {
+      ...omit(user, ["password", "createdAt", "updatedAt"]),
+      session: session.id,
+      userIp: get(decoded, "userIp"),
+      userAgent: get(decoded, "userAgent"),
+    },
     signKeyName: "accTokenPriKey",
     options: { expiresIn: config.get("accTokenTimeToLive") },
   });

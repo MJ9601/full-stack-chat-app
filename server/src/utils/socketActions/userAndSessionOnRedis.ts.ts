@@ -7,10 +7,10 @@ import {
 import { Session, User } from "@prisma/client";
 
 export const getUserAndSessionFromRedis = async (
-  userId: string,
+  username: string,
   sessionId: string
 ) => {
-  const userRedis = await hGetAllFromRedis(`user:${userId}`);
+  const userRedis = await hGetAllFromRedis(`user:${username}`);
   const sessionIdRedis = await hGetFromRedis(`session:${sessionId}`, "id");
 
   return { userRedis, sessionIdRedis };
@@ -22,13 +22,17 @@ export const setUserAndSessionOnRedis = async (
   ex?: number
 ) => {
   await hSetOnRedis(
-    `user:${user.id}`,
+    `user:${user.username}`,
     {
-      ...omit(user, ["password"]),
+      ...omit(user, ["password", "updatedAt", "createdAt"]),
       session: session.id,
     },
     ex && ex
   );
 
-  await hSetOnRedis(`session:${session.id}`, session, ex && ex);
+  await hSetOnRedis(
+    `session:${session.id}`,
+    { ...omit(session, ["valid", "createdAt", "updatedAt"]) },
+    ex && ex
+  );
 };

@@ -34,6 +34,8 @@ export default async function deserializeToken(
     verifyKeyName: "accTokenPubKey",
   });
 
+  // logger.info({ decoded });
+
   if (decoded) {
     const verifiedBrowser = verifyIpAndAgent({
       req,
@@ -41,6 +43,7 @@ export default async function deserializeToken(
       agent: get(decoded, "userAgent")!,
     });
 
+    // logger.info(verifiedBrowser);
     if (!verifiedBrowser) return next();
 
     res.locals.user = decoded;

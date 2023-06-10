@@ -34,13 +34,23 @@ export const createSessionController = async (
     });
 
     const accessToken = signJwt({
-      tokenPayload: { ...omit(user, ["password"]), session: newSession.id },
+      tokenPayload: {
+        ...omit(user, ["password", "createdAt", "updatedAt"]),
+        session: newSession.id,
+        userIp: newSession.userIp,
+        userAgent: newSession.userAgent,
+      },
       signKeyName: "accTokenPriKey",
       options: { expiresIn: config.get<string>("accTokenTimeToLive") },
     });
 
     const refreshToken = signJwt({
-      tokenPayload: { ...omit(user, ["password"]), session: newSession.id },
+      tokenPayload: {
+        ...omit(user, ["password"]),
+        session: newSession.id,
+        userIp: newSession.userIp,
+        userAgent: newSession.userAgent,
+      },
       signKeyName: "refTokenPriKey",
       options: { expiresIn: config.get<string>("refTokenTimeToLive") },
     });
