@@ -2,38 +2,55 @@ import { Socket } from "socket.io";
 import { get } from "lodash";
 import {
   getFromRedis,
-  hGetAllFromRedis,
   hGetFromRedis,
 } from "../../services/redis/redis.service";
 import { Callback } from "ioredis";
+import { findOneUser } from "../../services/user.service";
+import { roomExistChecking } from "../../utils/roomActions/roomExistChecking";
+import logger from "../../utils/logger";
 
 export const createPrivateRoomHandler = async (
   socket: Socket,
-  username: string,
+  userFriend: string,
   cb: Callback
 ) => {
-  console.log(username);
+  console.log(userFriend);
+  console.log(socket.id);
   try {
-    if (username == get(socket, "user.username"))
-      return cb(
-        { name: "403", message: "Can't start Conversation with SELF!!" },
-        null
-      );
+    if (userFriend == get(socket, "user.username")) {
+      cb({
+        name: "403",
+        message: "Can't start Conversation with SELF!!",
+      });
+      return;
+    }
+
+    const username = get(socket, "user.username")!;
+    const friendIdFromRedis = await hGetFromRedis(userFriend, "id");
+    if (!friendIdFromRedis) {
+      const _userFriend = await findOneUser({
+        where: { username: userFriend },
+      });
+      if (!_userFriend)
+        return cb({
+          name: "404",
+          message: "No one with That email found!!",
+        });
+    } else {
+    }
+
+    roomExistChecking(username, userFriend);
 
     const _userRoomFromRedis = await getFromRedis(`rooms:${username}`);
     if (_userRoomFromRedis) {
       const userRoomFromRedis = JSON.parse(_userRoomFromRedis);
       console.log(userRoomFromRedis);
-      return cb({ name: "403", message: "Room already exists!!" });
-    }
-
-    const userFromRedis = await hGetFromRedis(username, "id");
-    if (!userFromRedis) {
-      // const
-    } else {
+      return cb({ name: "403", message: "Room already exists!!" }, null);
     }
   } catch (error: any) {
-    cb({ name: error.response.status, message: error.message });
+    logger.error(error);
+
+    cb({ name: "403", message: error.message });
   }
 };
 

@@ -8,10 +8,16 @@ import {
   ModalCloseButton,
   Button,
   Divider,
+  Text,
+  HStack,
+  VStack,
 } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import TextField from "../common/TextField";
 import * as yup from "yup";
+import { useSocketInfo } from "../context/socketContext";
+import EVENTS from "../../utils/EVENTS";
+import { useState } from "react";
 
 export default function NewChatModal({
   isOpen,
@@ -20,9 +26,12 @@ export default function NewChatModal({
   isOpen: boolean;
   onClose: () => void;
 }) {
+  const { socket } = useSocketInfo();
+  const [error, setError] = useState<any>(null);
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
+      {/* @ts-ignore */}
       <ModalContent>
         <ModalHeader>Start A Conversation</ModalHeader>
         <ModalCloseButton />
@@ -33,13 +42,37 @@ export default function NewChatModal({
             username: yup.string().required("username is required!").email(),
           })}
           onSubmit={async (values, actions) => {
-            alert(JSON.stringify(values));
             actions.resetForm();
-            onClose();
+            // alert(JSON.stringify(values));
+            socket.emit(
+              EVENTS.CLIENT.CREATE_PRIVATE,
+              values.username,
+              (err: Error, results: any) => {
+                // console.log("first");
+                if (err) setError(err);
+                else {
+                  onClose();
+                  setError(null);
+                }
+              }
+            );
+            // onClose();
+            // console.log(error);
+            return;
           }}
         >
           <Form>
-            <ModalBody pt="1.5rem">
+            {error && (
+              <VStack>
+                <Text color="red.500" mt="3" fontSize="lg" textAlign="center">
+                  {error.name}
+                </Text>
+                <Text color="red.500" textAlign="center" mt="3">
+                  {error.message}
+                </Text>
+              </VStack>
+            )}
+            <ModalBody pt="1.2rem">
               <TextField
                 // @ts-ignore
                 name="username"

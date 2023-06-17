@@ -4,7 +4,7 @@ import EVENTS from "./EVENTS";
 
 import authSocket from "../middlewares/socket/authSocket.middleware";
 import { get } from "lodash";
-import stabilizerSocket from "../middlewares/socket/stabilizer.middleware";
+// import stabilizerSocket from "../middlewares/socket/stabilizer.middleware";
 import {
   createNewRoomHandler,
   createPrivateRoomHandler,
@@ -12,6 +12,7 @@ import {
 } from "../controllers/socket/room.controllers";
 import { Callback } from "ioredis";
 import { createMsgHandler } from "../controllers/socket/message.controller";
+import { roomExistChecking } from "./roomActions/roomExistChecking";
 
 export default function socketConfig({ io }: { io: Server }) {
   logger.info("Sockets enbled!!");
@@ -23,34 +24,40 @@ export default function socketConfig({ io }: { io: Server }) {
   //   requiredUser(req as Request, res as Response, next)
   // );
   io.use((socket: Socket, next) => authSocket(socket, next));
-  io.use(stabilizerSocket);
+  // io.use(stabilizerSocket);
 
   io.on(EVENTS.CONNECTION, (socket: Socket) => {
-    logger.info(`Socket id => ${socket.id} \n`);
+    logger.info(`Socket id => ${socket.id}`);
 
+    console.log("first");
+
+    // roomExistChecking("ss", "sss");
     // create private chat
     socket.on(
-      EVENTS.CLIENT.CREATE_ROOM,
-      (socket: Socket) => (username: string, cb: Callback) =>
-        createPrivateRoomHandler(socket, username, cb)
+      EVENTS.CLIENT.CREATE_PRIVATE,
+      (username: string, cb: Callback) => {
+        console.log("second");
+        createPrivateRoomHandler(socket, username, cb);
+        return;
+      }
     );
 
-    // create new room
-    socket.on(
-      EVENTS.CLIENT.CREATE_ROOM,
-      (socket: Socket) => () => createNewRoomHandler()
-    );
+    // // create new room
+    // socket.on(
+    //   EVENTS.CLIENT.CREATE_ROOM,
+    //   (socket: Socket) => () => createNewRoomHandler()
+    // );
 
-    // set current room
-    socket.on(
-      EVENTS.CLIENT.SET_CUR_ROOM,
-      (socket: Socket) => () => getOneRoomHandler()
-    );
+    // // set current room
+    // socket.on(
+    //   EVENTS.CLIENT.SET_CUR_ROOM,
+    //   (socket: Socket) => () => getOneRoomHandler()
+    // );
 
-    // create msg
-    socket.on(
-      EVENTS.CLIENT.CREATE_MSG,
-      (socket: Socket) => () => createMsgHandler()
-    );
+    // // create msg
+    // socket.on(
+    //   EVENTS.CLIENT.CREATE_MSG,
+    //   (socket: Socket) => () => createMsgHandler()
+    // );
   });
 }

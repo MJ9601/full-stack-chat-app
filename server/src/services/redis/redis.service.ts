@@ -32,3 +32,24 @@ export const removeAllFromRedis = async () => await redisClient!.flushall();
 
 export const removeFromRedis = async (key: RedisKey) =>
   await redisClient!.del(key);
+
+export const pushToListFromLeftOnRedis = async (
+  key: RedisKey,
+  values: (string | Buffer | number)[],
+  ex?: number
+) => {
+  await redisClient!.lpush(key, ...values);
+  ex && (await redisClient!.expire(key, ex));
+};
+
+export const popListFromLeftOnRedis = async (key: RedisKey) =>
+  await redisClient!.lpop(key);
+
+export const popListFromRightOnRedis = async (key: RedisKey) =>
+  await redisClient!.rpop(key);
+
+export const getListFromLeftOnRedis = async (
+  key: RedisKey,
+  startRange: number,
+  endRange: number
+) => await redisClient!.lrange(key, startRange, endRange);
