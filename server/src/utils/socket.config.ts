@@ -1,6 +1,6 @@
 import { Server, Socket } from "socket.io";
-import logger from "./logger";
-import EVENTS from "./EVENTS";
+import logger from "./helper/logger";
+import EVENTS from "./helper/EVENTS";
 
 import authSocket from "../middlewares/socket/authSocket.middleware";
 import { get } from "lodash";
@@ -29,17 +29,12 @@ export default function socketConfig({ io }: { io: Server }) {
   io.on(EVENTS.CONNECTION, (socket: Socket) => {
     logger.info(`Socket id => ${socket.id}`);
 
-    console.log("first");
+    // console.log("first");
 
     // roomExistChecking("ss", "sss");
     // create private chat
-    socket.on(
-      EVENTS.CLIENT.CREATE_PRIVATE,
-      (username: string, cb: Callback) => {
-        console.log("second");
-        createPrivateRoomHandler(socket, username, cb);
-        return;
-      }
+    socket.on(EVENTS.CLIENT.CREATE_PRIVATE, (username: string, cb: Callback) =>
+      createPrivateRoomHandler(socket, username, cb)
     );
 
     // // create new room

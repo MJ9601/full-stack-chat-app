@@ -5,13 +5,14 @@ import {
   hSetOnRedis,
 } from "../../services/redis/redis.service";
 import { Session, User } from "@prisma/client";
+import baseKey from "../helper/rediskeys.helper";
 
 export const getUserAndSessionFromRedis = async (
   username: string,
   sessionId: string
 ) => {
-  const userRedis = await hGetAllFromRedis(`user:${username}`);
-  const sessionIdRedis = await hGetFromRedis(`session:${sessionId}`, "id");
+  const userRedis = await hGetAllFromRedis(baseKey.USER(username));
+  const sessionIdRedis = await hGetFromRedis(baseKey.SESSION(sessionId), "id");
 
   return { userRedis, sessionIdRedis };
 };
@@ -22,7 +23,7 @@ export const setUserAndSessionOnRedis = async (
   ex?: number
 ) => {
   await hSetOnRedis(
-    `user:${user.username}`,
+    baseKey.USER(user.username),
     {
       ...omit(user, ["password", "updatedAt", "createdAt"]),
       session: session.id,
@@ -31,7 +32,7 @@ export const setUserAndSessionOnRedis = async (
   );
 
   await hSetOnRedis(
-    `session:${session.id}`,
+    baseKey.SESSION(session.id),
     { ...omit(session, ["valid", "createdAt", "updatedAt"]) },
     ex && ex
   );

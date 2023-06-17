@@ -7,15 +7,16 @@ import {
 import { Callback } from "ioredis";
 import { findOneUser } from "../../services/user.service";
 import { roomExistChecking } from "../../utils/roomActions/roomExistChecking";
-import logger from "../../utils/logger";
+import logger from "../../utils/helper/logger";
+import baseKey from "../../utils/helper/rediskeys.helper";
 
 export const createPrivateRoomHandler = async (
   socket: Socket,
   userFriend: string,
   cb: Callback
 ) => {
-  console.log(userFriend);
-  console.log(socket.id);
+  // console.log(userFriend);
+  // console.log(socket.id);
   try {
     if (userFriend == get(socket, "user.username")) {
       cb({
@@ -26,27 +27,25 @@ export const createPrivateRoomHandler = async (
     }
 
     const username = get(socket, "user.username")!;
-    const friendIdFromRedis = await hGetFromRedis(userFriend, "id");
-    if (!friendIdFromRedis) {
-      const _userFriend = await findOneUser({
-        where: { username: userFriend },
-      });
-      if (!_userFriend)
-        return cb({
-          name: "404",
-          message: "No one with That email found!!",
-        });
-    } else {
-    }
+    // const friendIdFromRedis = await hGetFromRedis(
+    //   baseKey.USER(userFriend),
+    //   "id"
+    // );
 
-    roomExistChecking(username, userFriend);
+    // if (!friendIdFromRedis) {
+    //   const _userFriend = await findOneUser({
+    //     where: { username: userFriend },
+    //   });
+    //   if (!_userFriend)
+    //     return cb({
+    //       name: "404",
+    //       message: "No one with That email found!!",
+    //     });
+    // } else {
+    // }
 
-    const _userRoomFromRedis = await getFromRedis(`rooms:${username}`);
-    if (_userRoomFromRedis) {
-      const userRoomFromRedis = JSON.parse(_userRoomFromRedis);
-      console.log(userRoomFromRedis);
-      return cb({ name: "403", message: "Room already exists!!" }, null);
-    }
+    const { err, results } = await roomExistChecking(username, userFriend);
+    return cb(err, results);
   } catch (error: any) {
     logger.error(error);
 

@@ -10,7 +10,7 @@ import {
   getUserAndSessionFromRedis,
   setUserAndSessionOnRedis,
 } from "../utils/socketActions/userAndSessionOnRedis.ts";
-import logger from "../utils/logger";
+import logger from "../utils/helper/logger";
 
 export const createSession = async (input: Prisma.SessionCreateArgs) =>
   prisma.session.create(input);

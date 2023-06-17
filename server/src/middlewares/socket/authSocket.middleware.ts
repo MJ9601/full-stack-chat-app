@@ -4,7 +4,7 @@ import { verifyJwt } from "../../utils/jwt.utils";
 import { reIssueNewAccessToken } from "../../services/session.service";
 import { set, get } from "lodash";
 import { parse } from "cookie";
-import logger from "../../utils/logger";
+import logger from "../../utils/helper/logger";
 import verifyIpAndAgent from "../../utils/verifyIpAndAgent";
 import { Request } from "express";
 

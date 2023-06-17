@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import logger from "../../utils/logger";
+import logger from "../../utils/helper/logger";
 import { get } from "lodash";
 
 export default function requiredUser(

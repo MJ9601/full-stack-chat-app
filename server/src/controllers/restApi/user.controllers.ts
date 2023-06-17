@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { omit } from "lodash";
 import { CreateUserSchema } from "../../schemas/user.schema";
 import { createUser, findOneUser } from "../../services/user.service";
-import logger from "../../utils/logger";
+import logger from "../../utils/helper/logger";
 
 export const createUserController = async (
   req: Request<{}, {}, CreateUserSchema>,

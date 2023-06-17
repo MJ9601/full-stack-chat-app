@@ -5,10 +5,10 @@ import helmet from "helmet";
 import { createServer } from "http";
 import cors from "cors";
 import config from "config";
-import logger from "./logger";
 import cookieParser from "cookie-parser";
 import { version } from "../../package.json";
 import socketConfig from "./socket.config";
+import logger from "./helper/logger";
 
 export default async function serverConfig() {
   const app = express();
