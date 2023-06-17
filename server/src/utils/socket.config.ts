@@ -12,26 +12,18 @@ import {
 } from "../controllers/socket/room.controllers";
 import { Callback } from "ioredis";
 import { createMsgHandler } from "../controllers/socket/message.controller";
-import { roomExistChecking } from "./roomActions/roomExistChecking";
+// import { roomExistChecking } from "./roomActions/roomExistChecking";
 
 export default function socketConfig({ io }: { io: Server }) {
   logger.info("Sockets enbled!!");
 
-  // io.engine.use((req, res, next) =>
-  //   deserializeToken(req as Request, res as Response, next)
-  // );
-  // io.engine.use((req, res, next) =>
-  //   requiredUser(req as Request, res as Response, next)
-  // );
   io.use((socket: Socket, next) => authSocket(socket, next));
-  // io.use(stabilizerSocket);
 
   io.on(EVENTS.CONNECTION, (socket: Socket) => {
     logger.info(`Socket id => ${socket.id}`);
 
-    // console.log("first");
+    
 
-    // roomExistChecking("ss", "sss");
     // create private chat
     socket.on(EVENTS.CLIENT.CREATE_PRIVATE, (username: string, cb: Callback) =>
       createPrivateRoomHandler(socket, username, cb)

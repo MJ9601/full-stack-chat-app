@@ -40,6 +40,8 @@ export const pushToListFromLeftOnRedis = async (
 ) => {
   await redisClient!.lpush(key, ...values);
   ex && (await redisClient!.expire(key, ex));
+
+  // await redisClient!.lset()
 };
 
 export const popListFromLeftOnRedis = async (key: RedisKey) =>

@@ -36,7 +36,7 @@ export const createSessionController = async (
     console.log(user);
     const accessToken = signJwt({
       tokenPayload: {
-        ...omit(user, ["password", "createdAt", "updatedAt"]),
+        ...omit(user, ["password", "createdAt", "updatedAt", "Room"]),
         session: newSession.id,
         userIp: newSession.userIp,
         userAgent: newSession.userAgent,
@@ -47,7 +47,7 @@ export const createSessionController = async (
 
     const refreshToken = signJwt({
       tokenPayload: {
-        ...omit(user, ["password"]),
+        ...omit(user, ["password", "Room"]),
         session: newSession.id,
         userIp: newSession.userIp,
         userAgent: newSession.userAgent,

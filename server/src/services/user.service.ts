@@ -24,7 +24,19 @@ export const validateUsernameAndPassword = async (
   username: string,
   incomingPass: string
 ) => {
-  const user = await prisma.user.findUnique({ where: { username } });
+  const user = await prisma.user.findUnique({
+    where: { username },
+    include: {
+      Room: {
+        select: {
+          id: true,
+          name: true,
+          redisId: true,
+          members: { select: { id: true, username: true } },
+        },
+      },
+    },
+  });
   if (!user) return false;
 
   const compairedPass = await bcrypt.compareSync(incomingPass, user.password);

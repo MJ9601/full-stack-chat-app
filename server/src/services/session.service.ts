@@ -66,12 +66,24 @@ export const reIssueNewAccessToken = async (req: Request, token: string) => {
   const session = await prisma.session.findUnique({ where: { id: sessionId } });
   if (!session || !session.valid) return false;
 
-  const user = await findOneUser({ where: { id: session.userId } });
+  const user = await findOneUser({
+    where: { id: session.userId },
+    include: {
+      Room: {
+        select: {
+          id: true,
+          name: true,
+          redisId: true,
+          members: { select: { id: true, username: true } },
+        },
+      },
+    },
+  });
   if (!user) return false;
 
   const newToken = signJwt({
     tokenPayload: {
-      ...omit(user, ["password", "createdAt", "updatedAt"]),
+      ...omit(user, ["password", "createdAt", "updatedAt", "Room"]),
       session: session.id,
       userIp: get(decoded, "userIp"),
       userAgent: get(decoded, "userAgent"),

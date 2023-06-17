@@ -1,8 +1,10 @@
-import { omit } from "lodash";
+import { get, omit } from "lodash";
 import {
+  getListFromLeftOnRedis,
   hGetAllFromRedis,
   hGetFromRedis,
   hSetOnRedis,
+  pushToListFromLeftOnRedis,
 } from "../../services/redis/redis.service";
 import { Session, User } from "@prisma/client";
 import baseKey from "../helper/rediskeys.helper";
@@ -22,14 +24,34 @@ export const setUserAndSessionOnRedis = async (
   session: Session,
   ex?: number
 ) => {
+  const userRooms: object[] = get(user, "Room")!;
+
+  // console.log("---------");
+  // console.log(userRooms);
+  // console.log("---------");
+
   await hSetOnRedis(
     baseKey.USER(user.username),
     {
-      ...omit(user, ["password", "updatedAt", "createdAt"]),
+      ...omit(user, ["password", "updatedAt", "createdAt", "Room"]),
       session: session.id,
     },
     ex && ex
   );
+
+  const userRoomsOnRedis = await getListFromLeftOnRedis(
+    baseKey.ROOMS(user.username),
+    0,
+    -1
+  );
+
+  if (!userRoomsOnRedis || userRoomsOnRedis.length == 0) {
+    await pushToListFromLeftOnRedis(
+      baseKey.ROOMS(user.username),
+      userRooms.map((room) => JSON.stringify(room)),
+      14.5 * 60
+    );
+  }
 
   await hSetOnRedis(
     baseKey.SESSION(session.id),

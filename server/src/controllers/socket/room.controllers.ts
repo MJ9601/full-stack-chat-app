@@ -6,7 +6,7 @@ import {
 } from "../../services/redis/redis.service";
 import { Callback } from "ioredis";
 import { findOneUser } from "../../services/user.service";
-import { roomExistChecking } from "../../utils/roomActions/roomExistChecking";
+import { privateRoomExistChecking } from "../../utils/roomActions/roomExistChecking";
 import logger from "../../utils/helper/logger";
 import baseKey from "../../utils/helper/rediskeys.helper";
 
@@ -44,7 +44,10 @@ export const createPrivateRoomHandler = async (
     // } else {
     // }
 
-    const { err, results } = await roomExistChecking(username, userFriend);
+    const { err, results } = await privateRoomExistChecking(
+      username,
+      userFriend
+    );
     return cb(err, results);
   } catch (error: any) {
     logger.error(error);

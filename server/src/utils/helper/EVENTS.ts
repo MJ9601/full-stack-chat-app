@@ -4,8 +4,12 @@ export default {
   CLIENT: {
     CREATE_PRIVATE: "createPrivate",
     CREATE_ROOM: "createRoom",
-    SET_CUR_ROOM: "setCurRoom",
     CREATE_MSG: "createMsg",
   },
-  SERVER: {},
+  SERVER: {
+    CUR_ROOM: "curRoom",
+    ROOMS: "rooms",
+    MSGS: "msgs",
+    EMAILS: "emails",
+  },
 };

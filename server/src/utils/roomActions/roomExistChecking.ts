@@ -16,7 +16,7 @@ import { findOneUser } from "../../services/user.service";
 import createRandomId from "../helper/randomIdGen";
 import baseKey from "../helper/rediskeys.helper";
 
-export const roomExistChecking = async (
+export const privateRoomExistChecking = async (
   username: string,
   friendUsername: string
 ) => {
@@ -39,7 +39,7 @@ export const roomExistChecking = async (
     });
     if (!_friendFromMySql)
       return {
-        err: { name: "404", message: "user not Found!!" },
+        err: { name: "404", message: "User Not Found!!" },
         results: null,
       };
 
