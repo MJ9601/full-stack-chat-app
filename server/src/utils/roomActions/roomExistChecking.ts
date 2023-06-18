@@ -48,8 +48,6 @@ export const privateRoomExistChecking = async (
 
   let privateRoom = {} as Room | null;
 
-  console.log("line 50");
-
   // get user's rooms from redis
   let userRooms: string[] | Room[] | null | undefined =
     await getListFromLeftOnRedis(baseKey.ROOMS(username), 0, -1);
@@ -70,7 +68,11 @@ export const privateRoomExistChecking = async (
         JSON.stringify(privateRoom),
       ]);
 
-      await setOnRedis(baseKey.CUR_ROOM(username), JSON.stringify(privateRoom));
+      await setOnRedis(
+        baseKey.CUR_ROOM(username),
+        JSON.stringify(privateRoom),
+        15 * 60
+      );
 
       console.log("line 75 ---");
       console.log({ privateRoom });
@@ -91,7 +93,11 @@ export const privateRoomExistChecking = async (
 
     if (privateRoom && Object.keys(privateRoom!).length != 0) {
       console.log("line 93 ---");
-      await setOnRedis(baseKey.CUR_ROOM(username), JSON.stringify(privateRoom));
+      await setOnRedis(
+        baseKey.CUR_ROOM(username),
+        JSON.stringify(privateRoom),
+        15 * 60
+      );
       return { err: null, results: privateRoom };
     }
 
@@ -106,17 +112,8 @@ export const privateRoomExistChecking = async (
         connect: [{ id: userId! }, { id: friendId }],
       },
     },
+    include: { members: { select: { id: true, username: true } } },
   });
-
-  console.log("line 106 ---");
-  console.log({ privateRoom });
-
-  // privateRoom = await updateOneRoom({
-  //   where: { id: _privateRoom.id },
-  //   data: {
-  //     members: { connect: [{ id: userId! }, { id: friendId }] },
-  //   },
-  // });
 
   console.log("line 109 ---");
   console.log({ privateRoom });
@@ -127,39 +124,14 @@ export const privateRoomExistChecking = async (
       results: null,
     };
 
-  await setOnRedis(baseKey.CUR_ROOM(username), JSON.stringify(privateRoom));
+  await setOnRedis(
+    baseKey.CUR_ROOM(username),
+    JSON.stringify(privateRoom),
+    15 * 60
+  );
   await pushToListFromLeftOnRedis(baseKey.ROOMS(username), [
     JSON.stringify(privateRoom),
   ]);
 
-  console.log("line 123 ---");
-  console.log({ privateRoom });
   return { err: null, results: privateRoom };
-
-  // testing
-  // const testRooms = [
-  //   {
-  //     roomId: "0000",
-  //     name: "name1",
-  //     redisId: "000",
-  //     members: ["001", "002", "003", "004"],
-  //   },
-  //   {
-  //     roomId: "0001",
-  //     name: "name2",
-  //     redisId: "000",
-  //     members: ["001", "002", "003", "004"],
-  //   },
-  //   {
-  //     roomId: "0003",
-  //     name: "name3",
-  //     redisId: "000",
-  //     members: ["001", "002", "003", "004"],
-  //   },
-  // ];
-
-  // const _testRooms = testRooms.map((room) => JSON.stringify(room));
-  // await pushToListFromLeftOnRedis(`rooms:${username}`, _testRooms);
-
-  // let usersRooms = await getListFromLeftOnRedis(`rooms:${username}`, 0, -1);
 };

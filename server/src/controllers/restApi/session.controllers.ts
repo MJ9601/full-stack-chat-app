@@ -33,7 +33,7 @@ export const createSessionController = async (
       },
     });
 
-    console.log(user);
+    // console.log(user);
     const accessToken = signJwt({
       tokenPayload: {
         ...omit(user, ["password", "createdAt", "updatedAt", "Room"]),

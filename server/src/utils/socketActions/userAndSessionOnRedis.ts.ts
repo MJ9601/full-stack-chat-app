@@ -49,7 +49,7 @@ export const setUserAndSessionOnRedis = async (
     await pushToListFromLeftOnRedis(
       baseKey.ROOMS(user.username),
       userRooms.map((room) => JSON.stringify(room)),
-      14.5 * 60
+      ex && ex
     );
   }
 

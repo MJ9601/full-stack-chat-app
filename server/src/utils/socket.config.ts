@@ -22,8 +22,6 @@ export default function socketConfig({ io }: { io: Server }) {
   io.on(EVENTS.CONNECTION, (socket: Socket) => {
     logger.info(`Socket id => ${socket.id}`);
 
-    
-
     // create private chat
     socket.on(EVENTS.CLIENT.CREATE_PRIVATE, (username: string, cb: Callback) =>
       createPrivateRoomHandler(socket, username, cb)
