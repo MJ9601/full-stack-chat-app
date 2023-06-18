@@ -18,6 +18,7 @@ import * as yup from "yup";
 import { useSocketInfo } from "../context/socketContext";
 import EVENTS from "../../utils/EVENTS";
 import { useState } from "react";
+import { Room } from "../context/chatInfo";
 
 export default function NewChatModal({
   isOpen,
@@ -26,7 +27,7 @@ export default function NewChatModal({
   isOpen: boolean;
   onClose: () => void;
 }) {
-  const { socket } = useSocketInfo();
+  const { socket, setRooms, setCurRoom } = useSocketInfo();
   const [error, setError] = useState<any>(null);
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -47,10 +48,13 @@ export default function NewChatModal({
             socket.emit(
               EVENTS.CLIENT.CREATE_PRIVATE,
               values.username,
-              (err: Error, results: any) => {
+              (err: Error, results: Room) => {
                 // console.log("first");
                 if (err) setError(err);
                 else {
+                  setCurRoom(results);
+                  // @ts-ignore
+                  setRooms((rooms) => [results, ...rooms] as Room[]);
                   onClose();
                   setError(null);
                 }

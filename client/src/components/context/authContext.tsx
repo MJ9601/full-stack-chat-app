@@ -29,7 +29,9 @@ const LogContext = createContext<AuthContext>({
 export default function LogProvider(props: any) {
   const [loading, setLoading] = useState(true);
   const [hitLim, setHitLim] = useState(false);
-  const [logged, setLogged] = useState(async () => await getMe());
+  const [logged, setLogged] = useState<
+    Promise<string | boolean | User> | (string | User)
+  >(async () => await getMe());
   const navigate = useNavigate();
   useLayoutEffect(() => {
     const setRoute = async () => {
@@ -37,6 +39,9 @@ export default function LogProvider(props: any) {
       else if ((await logged) == "reqLimitation") {
         setHitLim(true);
       } else navigate("/");
+
+      // @ts-ignore
+      setLogged(await logged);
 
       setLoading(false);
     };

@@ -13,18 +13,21 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { useChatInfo } from "../context/chatContext";
+import { useSocketInfo } from "../context/socketContext";
 import { get } from "lodash";
 import { useAuth } from "../context/authContext";
 import NewChatModal from "../modal/NewChat.modal";
 
 export default function Sidebar() {
-  const { rooms, setCurRoom } = useChatInfo();
+  const { setCurRoom } = useChatInfo();
+  const { rooms } = useSocketInfo();
   const { logged } = useAuth();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const chatnames = rooms.map((room) =>
-    room.name
+    room.name.length <= 45
       ? room.name
-      : room.members!.filter((member) => member != get(logged, "id"))
+      : room.members!.filter((member) => member.id != get(logged, "id"))[0]
+          .username
   );
   return (
     <>

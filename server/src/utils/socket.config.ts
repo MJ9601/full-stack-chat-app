@@ -4,7 +4,7 @@ import EVENTS from "./helper/EVENTS";
 
 import authSocket from "../middlewares/socket/authSocket.middleware";
 import { get } from "lodash";
-// import stabilizerSocket from "../middlewares/socket/stabilizer.middleware";
+import stabilizerSocket from "../middlewares/socket/stabilizer.middleware";
 import {
   createNewRoomHandler,
   createPrivateRoomHandler,
@@ -18,6 +18,8 @@ export default function socketConfig({ io }: { io: Server }) {
   logger.info("Sockets enbled!!");
 
   io.use((socket: Socket, next) => authSocket(socket, next));
+
+  io.use((socket: Socket, next) => stabilizerSocket(socket, next));
 
   io.on(EVENTS.CONNECTION, (socket: Socket) => {
     logger.info(`Socket id => ${socket.id}`);

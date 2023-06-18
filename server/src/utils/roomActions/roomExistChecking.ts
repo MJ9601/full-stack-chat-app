@@ -129,9 +129,11 @@ export const privateRoomExistChecking = async (
     JSON.stringify(privateRoom),
     15 * 60
   );
-  await pushToListFromLeftOnRedis(baseKey.ROOMS(username), [
-    JSON.stringify(privateRoom),
-  ]);
+  await pushToListFromLeftOnRedis(
+    baseKey.ROOMS(username),
+    [JSON.stringify(privateRoom)],
+    15 * 60
+  );
 
   return { err: null, results: privateRoom };
 };

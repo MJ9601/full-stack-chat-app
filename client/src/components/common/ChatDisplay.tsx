@@ -16,17 +16,19 @@ import { get } from "lodash";
 import { User } from "../context/chatInfo";
 
 export default function ChatDisplay() {
-  const { rooms, curRoom } = useChatInfo();
+  const { curRoom } = useChatInfo();
+  const { rooms } = useSocketInfo();
   const { logged } = useAuth();
   const { socket } = useSocketInfo();
   const chatnames = rooms.map((room) =>
-    room.name
+    room.name!.length <= 45
       ? room.name
       : room.members!.filter(
           (member: User) => member.id != get(logged, "id")
-        )[0]
+        )[0].username
   );
   return (
+    // @ts-ignore
     <VStack py=".1rem">
       {(Object.keys(curRoom!) || curRoom).length ? (
         <TabPanels pt=".1rem">

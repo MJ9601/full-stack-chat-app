@@ -8,6 +8,7 @@ import {
 } from "../../services/redis/redis.service";
 import { Session, User } from "@prisma/client";
 import baseKey from "../helper/rediskeys.helper";
+import { findManyUsers } from "../../services/user.service";
 
 export const getUserAndSessionFromRedis = async (
   username: string,
@@ -59,3 +60,23 @@ export const setUserAndSessionOnRedis = async (
     ex && ex
   );
 };
+
+export const setUserEmailList = async (ex?: number) => {
+  const users = await findManyUsers({
+    where: {},
+    select: { username: true },
+  });
+
+  const userEmails = users.map((user) => user.username);
+
+  console.log(userEmails);
+
+  await pushToListFromLeftOnRedis(
+    baseKey.USERS_LIST,
+    userEmails,
+    ex && ex
+  );
+};
+
+export const getUserEmailList = async () =>
+  await getListFromLeftOnRedis(baseKey.USERS_LIST, 0, -1);

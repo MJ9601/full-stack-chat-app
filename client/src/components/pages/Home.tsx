@@ -2,8 +2,10 @@ import { Grid, GridItem, Tabs } from "@chakra-ui/react";
 import Sidebar from "../common/Sidebar";
 import ChatProvider from "../context/chatContext";
 import ChatDisplay from "../common/ChatDisplay";
+import { useSocketInfo } from "../context/socketContext";
 
 export default function Home() {
+  const { rooms, curRoom } = useSocketInfo();
   return (
     <ChatProvider>
       {/*  @ts-ignore */}
@@ -13,6 +15,7 @@ export default function Home() {
         as={Tabs}
         variant="solid-rounded"
         colorScheme="gray"
+        // index={activeIndex}
       >
         <GridItem colSpan={[1, 1, 3, 2]} borderRight="1px solid gray">
           <Sidebar />
