@@ -9,7 +9,10 @@ const router = Router();
 // create session
 router.post(
   "/",
-  [reqRateController(30, 2), requestValidater(sessionUserSchema)],
+  [
+    // reqRateController(30, 2),
+    requestValidater(sessionUserSchema),
+  ],
   createSessionController
 );
 

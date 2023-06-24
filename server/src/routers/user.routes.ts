@@ -13,11 +13,21 @@ const router = Router();
 // create user
 router.post(
   "/",
-  [reqRateController(30, 2), requestValidater(createUserSchema)],
+  [
+    // reqRateController(30, 2),
+    requestValidater(createUserSchema),
+  ],
   createUserController
 );
 
 // getMe
-router.get("/me", [reqRateController(20, 10), requiredUser], getMeController);
+router.get(
+  "/me",
+  [
+    // reqRateController(20, 10),
+    requiredUser,
+  ],
+  getMeController
+);
 
 export default router;
