@@ -16,11 +16,11 @@ import { useChatInfo } from "../context/chatContext";
 import { useSocketInfo } from "../context/socketContext";
 import { get } from "lodash";
 import { useAuth } from "../context/authContext";
-import NewChatModal from "../modal/NewChat.modal";
+import NewChatModal from "./modal/NewChat.modal";
 
 export default function Sidebar() {
-  const { setCurRoom } = useChatInfo();
-  const { rooms } = useSocketInfo();
+  // const { setCurRoom } = useChatInfo();
+  const { rooms, setCurRoom } = useSocketInfo();
   const { logged } = useAuth();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const chatnames = rooms!.map((room) =>
@@ -29,6 +29,10 @@ export default function Sidebar() {
       : room.members!.filter((member) => member.id != get(logged, "id"))[0]
           .username
   );
+
+  const cutName = (name: string) =>
+    name.length < 14 ? name : `${name.substr(0, 13)}...`;
+
   return (
     <>
       <VStack py="1.5rem">
@@ -54,7 +58,7 @@ export default function Sidebar() {
               <Avatar size="sm">
                 <AvatarBadge bg="tomato" boxSize="1.1em" />
               </Avatar>
-              <Text>{chatnames[index]}</Text>
+              <Text>{cutName(chatnames[index] || "")}</Text>
             </HStack>
           ))}
         </VStack>

@@ -16,8 +16,8 @@ import { get } from "lodash";
 import { User } from "../context/chatInfo";
 
 export default function ChatDisplay() {
-  const { curRoom } = useChatInfo();
-  const { rooms } = useSocketInfo();
+  // const { curRoom } = useChatInfo();
+  const { rooms, curRoom } = useSocketInfo();
   const { logged } = useAuth();
   const { socket } = useSocketInfo();
   const chatnames = rooms.map((room) =>

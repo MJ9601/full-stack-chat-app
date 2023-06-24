@@ -24,6 +24,7 @@ export default async function stabilizerSocket(
 
     if (userRooms) {
       const rooms = userRooms.map((room) => JSON.parse(room));
+      // logger.info({ rooms });
       socket.emit(EVENTS.SERVER.ROOMS, rooms);
     }
 

@@ -1,12 +1,8 @@
 import { Socket } from "socket.io";
 import { get } from "lodash";
-import {
-  getFromRedis,
-  getListFromLeftOnRedis,
-  hGetFromRedis,
-} from "../../services/redis/redis.service";
+import { getListFromLeftOnRedis } from "../../services/redis/redis.service";
 import { Callback } from "ioredis";
-import { findOneUser } from "../../services/user.service";
+
 import { privateRoomExistChecking } from "../../utils/roomActions/roomExistChecking";
 import logger from "../../utils/helper/logger";
 import baseKey from "../../utils/helper/rediskeys.helper";
@@ -41,7 +37,8 @@ export const createPrivateRoomHandler = async (
         -1
       );
       // socket.broadcast.emit(EVENTS.SERVER.ROOMS, rooms);
-      socket.emit(EVENTS.SERVER.ROOMS, rooms);
+      const _rooms = rooms.map((room) => JSON.parse(room));
+      socket.emit(EVENTS.SERVER.ROOMS, _rooms);
 
       socket.emit(EVENTS.SERVER.CUR_ROOM, results);
     }
