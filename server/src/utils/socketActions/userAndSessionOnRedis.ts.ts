@@ -17,6 +17,8 @@ export const getUserAndSessionFromRedis = async (
   const userRedis = await hGetAllFromRedis(baseKey.USER(username));
   const sessionIdRedis = await hGetFromRedis(baseKey.SESSION(sessionId), "id");
 
+  console.log({ userRedis, sessionIdRedis });
+
   return { userRedis, sessionIdRedis };
 };
 
@@ -40,18 +42,20 @@ export const setUserAndSessionOnRedis = async (
     ex && ex
   );
 
-  const userRoomsOnRedis = await getListFromLeftOnRedis(
-    baseKey.ROOMS(user.username),
-    0,
-    -1
-  );
-
-  if (!userRoomsOnRedis || userRoomsOnRedis.length == 0) {
-    await pushToListFromLeftOnRedis(
+  if (userRooms.length !== 0) {
+    const userRoomsOnRedis = await getListFromLeftOnRedis(
       baseKey.ROOMS(user.username),
-      userRooms.map((room) => JSON.stringify(room)),
-      ex && ex
+      0,
+      -1
     );
+
+    if (!userRoomsOnRedis || userRoomsOnRedis.length == 0) {
+      await pushToListFromLeftOnRedis(
+        baseKey.ROOMS(user.username),
+        userRooms.map((room) => JSON.stringify(room)),
+        ex && ex
+      );
+    }
   }
 
   await hSetOnRedis(
@@ -71,11 +75,7 @@ export const setUserEmailList = async (ex?: number) => {
 
   console.log(userEmails);
 
-  await pushToListFromLeftOnRedis(
-    baseKey.USERS_LIST,
-    userEmails,
-    ex && ex
-  );
+  await pushToListFromLeftOnRedis(baseKey.USERS_LIST, userEmails, ex && ex);
 };
 
 export const getUserEmailList = async () =>

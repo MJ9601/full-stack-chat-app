@@ -108,6 +108,7 @@ export const privateRoomExistChecking = async (
     data: {
       name: `${userId}-${friendId}`,
       redisId: createRandomId(15),
+      isPrivate: true,
       members: {
         connect: [{ id: userId! }, { id: friendId }],
       },

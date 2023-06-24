@@ -25,7 +25,7 @@ export default async function authSocketMiddleware(
     const { accessToken, refreshToken } = cookies;
 
     if (!accessToken && !refreshToken) {
-      logger.error("Socket disconnected!!");
+      logger.error("Socket disconnected!! No accessToken or refreshToken");
       return next(new Error("UnAuthorized!!"));
     }
 
@@ -42,7 +42,7 @@ export default async function authSocketMiddleware(
       });
 
       if (!verifiedBrowser) {
-        logger.error("Socket disconnected!!");
+        logger.error("Socket disconnected!! Invalid Token");
         return next(new Error("UnAuthorized!!"));
       }
 
@@ -51,16 +51,21 @@ export default async function authSocketMiddleware(
     }
 
     if (expired && refreshToken) {
+      logger.info("line 55");
       const newAccessToken = await reIssueNewAccessToken(
         socket.request as Request,
         refreshToken
       );
 
+      logger.info("line 60");
+      logger.info({ newAccessToken });
+
       if (!newAccessToken) {
-        logger.error("Socket disconnected!!");
+        logger.error("Socket disconnected!! No New Token");
         return next(new Error("UnAuthorized!!"));
       }
 
+      logger.info("line 66");
       set(
         socket.handshake.headers,
         "cookie",

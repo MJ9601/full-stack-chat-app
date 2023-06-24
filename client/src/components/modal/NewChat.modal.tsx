@@ -54,7 +54,7 @@ export default function NewChatModal({
                 else {
                   setCurRoom(results);
                   // @ts-ignore
-                  setRooms((rooms) => [results, ...rooms] as Room[]);
+                  // setRooms((rooms) => [results, ...rooms] as Room[]);
                   onClose();
                   setError(null);
                 }

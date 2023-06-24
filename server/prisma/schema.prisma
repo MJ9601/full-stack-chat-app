@@ -24,9 +24,10 @@ model User {
 }
 
 model Room {
-  id      String  @id @default(cuid())
-  name    String? @db.VarChar(60)
-  redisId String  @unique @db.VarChar(25)
+  id        String  @id @default(cuid())
+  name      String? @db.VarChar(60)
+  redisId   String  @unique @db.VarChar(25)
+  isPrivate Boolean @default(false)
 
   members User[]
   msgs    Message[]

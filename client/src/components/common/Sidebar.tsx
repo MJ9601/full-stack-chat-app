@@ -23,8 +23,8 @@ export default function Sidebar() {
   const { rooms } = useSocketInfo();
   const { logged } = useAuth();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const chatnames = rooms.map((room) =>
-    room.name.length <= 45
+  const chatnames = rooms!.map((room) =>
+    !room.isPrivate
       ? room.name
       : room.members!.filter((member) => member.id != get(logged, "id"))[0]
           .username

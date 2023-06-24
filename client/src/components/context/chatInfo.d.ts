@@ -11,7 +11,8 @@ export interface User {
 
 export interface Room {
   id: string;
-  name?: string;
+  name: string;
+  isPrivate: boolean;
 
   members?: User[] | [];
   msgs?: Message[] | [];

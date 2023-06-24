@@ -15,7 +15,7 @@ export const updateOneUsers = async (input: Prisma.UserUpdateArgs) =>
   prisma.user.update(input);
 
 export const deleteManyUsers = async (input: Prisma.UserDeleteManyArgs) =>
-  prisma.user.deleteMany(input);
+  await prisma.user.deleteMany(input);
 
 export const deleteOneUsers = async (input: Prisma.UserDeleteArgs) =>
   prisma.user.delete(input);
@@ -32,6 +32,7 @@ export const validateUsernameAndPassword = async (
           id: true,
           name: true,
           redisId: true,
+          isPrivate: true,
           members: { select: { id: true, username: true } },
         },
       },

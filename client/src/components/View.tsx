@@ -27,10 +27,10 @@ export default function View() {
       ) : (
         <Routes>
           <Route path="/">
-            <Route path="login" element={<Login />} />
-            <Route path="register" element={<Signup />} />
-            <Route path="*" element={<Login />} />
             <Route element={<PrivateRoute />}>
+              <Route path="login" element={<Login />} />
+              <Route path="register" element={<Signup />} />
+              <Route path="*" element={<Login />} />
               <Route path="/" element={<Home />} />
             </Route>
           </Route>

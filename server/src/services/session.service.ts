@@ -24,13 +24,15 @@ export const findOneUserSessions = async (input: Prisma.SessionFindManyArgs) =>
 export const updateOneSession = async (input: Prisma.SessionUpdateArgs) =>
   prisma.session.update(input);
 
-export const deleteOneUserSessions = async (
-  input: Prisma.SessionDeleteManyArgs
-) => prisma.session.deleteMany(input);
+export const deleteSessions = async (input: Prisma.SessionDeleteManyArgs) =>
+  prisma.session.deleteMany(input);
 
 export const reIssueNewAccessToken = async (req: Request, token: string) => {
   const { decoded } = verifyJwt({ token, verifyKeyName: "refTokenPubKey" });
+
+  logger.info({ decoded, session: get(decoded, "session") });
   if (!decoded || !get(decoded, "session")) return false;
+  logger.info("line33 -----");
 
   const verifiedBrowser = verifyIpAndAgent({
     req,
@@ -39,6 +41,8 @@ export const reIssueNewAccessToken = async (req: Request, token: string) => {
   });
   if (!verifiedBrowser) return false;
 
+  logger.info("line41--------");
+
   const sessionId = get(decoded, "session")!;
   const username = get(decoded, "username")!;
 
@@ -46,6 +50,8 @@ export const reIssueNewAccessToken = async (req: Request, token: string) => {
     username,
     sessionId
   );
+
+  logger.info("line55--------");
 
   if (sessionIdRedis && userRedis) {
     const newToken = signJwt({
@@ -74,11 +80,13 @@ export const reIssueNewAccessToken = async (req: Request, token: string) => {
           id: true,
           name: true,
           redisId: true,
+          isPrivate: true,
           members: { select: { id: true, username: true } },
         },
       },
     },
   });
+  console.log(user);
   if (!user) return false;
 
   const newToken = signJwt({
