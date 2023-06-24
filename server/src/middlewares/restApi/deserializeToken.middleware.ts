@@ -15,17 +15,10 @@ export default async function deserializeToken(
     get(req, "cookies.accessToken") ||
     get(req, "headers.authorization", "").replace(/^Bearer\s/, "");
 
-  // console.log({
-  //   accessToken,
-  //   token: req.headers.cookie,
-  //   token2: req.headers.authorization,
-  //   token3: req.headers["x-refresh"],
-  // });
 
   const refreshToken =
     get(req, "cookies.refreshToken") || get(req, "headers.x-refresh");
 
-  // logger.info({ refreshToken });
 
   if (!accessToken && !refreshToken) return next();
 
@@ -34,7 +27,6 @@ export default async function deserializeToken(
     verifyKeyName: "accTokenPubKey",
   });
 
-  // logger.info({ decoded });
 
   if (decoded) {
     const verifiedBrowser = verifyIpAndAgent({

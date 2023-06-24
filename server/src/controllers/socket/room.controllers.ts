@@ -40,7 +40,7 @@ export const createPrivateRoomHandler = async (
         0,
         -1
       );
-      socket.broadcast.emit(EVENTS.SERVER.ROOMS, rooms);
+      // socket.broadcast.emit(EVENTS.SERVER.ROOMS, rooms);
       socket.emit(EVENTS.SERVER.ROOMS, rooms);
 
       socket.emit(EVENTS.SERVER.CUR_ROOM, results);

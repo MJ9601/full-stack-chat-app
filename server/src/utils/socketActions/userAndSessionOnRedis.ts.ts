@@ -17,8 +17,6 @@ export const getUserAndSessionFromRedis = async (
   const userRedis = await hGetAllFromRedis(baseKey.USER(username));
   const sessionIdRedis = await hGetFromRedis(baseKey.SESSION(sessionId), "id");
 
-  console.log({ userRedis, sessionIdRedis });
-
   return { userRedis, sessionIdRedis };
 };
 
@@ -29,9 +27,6 @@ export const setUserAndSessionOnRedis = async (
 ) => {
   const userRooms: object[] = get(user, "Room")!;
 
-  // console.log("---------");
-  // console.log(userRooms);
-  // console.log("---------");
 
   await hSetOnRedis(
     baseKey.USER(user.username),
@@ -73,7 +68,6 @@ export const setUserEmailList = async (ex?: number) => {
 
   const userEmails = users.map((user) => user.username);
 
-  console.log(userEmails);
 
   await pushToListFromLeftOnRedis(baseKey.USERS_LIST, userEmails, ex && ex);
 };

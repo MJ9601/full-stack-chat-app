@@ -6,7 +6,7 @@ export default function PrivateRoute() {
   const { logged } = useAuth();
   const location = useLocation();
 
-  if (location.pathname == "/login" || "/register")
+  if (location.pathname == "/login" || location.pathname == "/register")
     return logged ? <Navigate to="/" /> : <Outlet />;
   return logged ? <Outlet /> : <Navigate to={"/login"} />;
 }

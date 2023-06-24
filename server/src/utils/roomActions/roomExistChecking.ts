@@ -52,16 +52,12 @@ export const privateRoomExistChecking = async (
   let userRooms: string[] | Room[] | null | undefined =
     await getListFromLeftOnRedis(baseKey.ROOMS(username), 0, -1);
 
-  console.log("line 56 ----");
-  console.log(userRooms);
 
   if (!userRooms || userRooms.length == 0) {
     privateRoom = await findOneRoomByName({
       where: { name: `${userId}-${friendId}` || `${friendId}-${userId}` },
     });
 
-    console.log("line 63 ---");
-    console.log({ privateRoom });
 
     if (privateRoom) {
       await pushToListFromLeftOnRedis(baseKey.ROOMS(username), [
@@ -74,8 +70,6 @@ export const privateRoomExistChecking = async (
         15 * 60
       );
 
-      console.log("line 75 ---");
-      console.log({ privateRoom });
       return { err: null, results: privateRoom };
     }
   }
@@ -88,8 +82,6 @@ export const privateRoomExistChecking = async (
         room.name == `${friendId}-${userId}`
     )[0];
 
-    console.log("line 91 ---");
-    console.log({ privateRoom });
 
     if (privateRoom && Object.keys(privateRoom!).length != 0) {
       console.log("line 93 ---");
@@ -101,7 +93,6 @@ export const privateRoomExistChecking = async (
       return { err: null, results: privateRoom };
     }
 
-    console.log("line 97 ---");
   }
 
   privateRoom = await createRoom({
@@ -116,8 +107,6 @@ export const privateRoomExistChecking = async (
     include: { members: { select: { id: true, username: true } } },
   });
 
-  console.log("line 109 ---");
-  console.log({ privateRoom });
 
   if (!privateRoom)
     return {

@@ -30,9 +30,7 @@ export const deleteSessions = async (input: Prisma.SessionDeleteManyArgs) =>
 export const reIssueNewAccessToken = async (req: Request, token: string) => {
   const { decoded } = verifyJwt({ token, verifyKeyName: "refTokenPubKey" });
 
-  logger.info({ decoded, session: get(decoded, "session") });
   if (!decoded || !get(decoded, "session")) return false;
-  logger.info("line33 -----");
 
   const verifiedBrowser = verifyIpAndAgent({
     req,
@@ -41,8 +39,6 @@ export const reIssueNewAccessToken = async (req: Request, token: string) => {
   });
   if (!verifiedBrowser) return false;
 
-  logger.info("line41--------");
-
   const sessionId = get(decoded, "session")!;
   const username = get(decoded, "username")!;
 
@@ -50,8 +46,6 @@ export const reIssueNewAccessToken = async (req: Request, token: string) => {
     username,
     sessionId
   );
-
-  logger.info("line55--------");
 
   if (sessionIdRedis && userRedis) {
     const newToken = signJwt({
@@ -67,7 +61,6 @@ export const reIssueNewAccessToken = async (req: Request, token: string) => {
 
     return newToken;
   }
-  logger.info("-------");
 
   const session = await prisma.session.findUnique({ where: { id: sessionId } });
   if (!session || !session.valid) return false;
@@ -86,7 +79,6 @@ export const reIssueNewAccessToken = async (req: Request, token: string) => {
       },
     },
   });
-  console.log(user);
   if (!user) return false;
 
   const newToken = signJwt({

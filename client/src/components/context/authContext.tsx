@@ -1,11 +1,11 @@
 import axios from "axios";
-import { createContext, useContext, useLayoutEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import constants from "../../utils/constants";
 import { useNavigate } from "react-router-dom";
 import { User } from "./chatInfo";
 import { AuthContext } from "./context";
 
-const getMe = async (): Promise<boolean | User | string> => {
+const getMe = async (): Promise<boolean | User | "reqLimitation"> => {
   try {
     const response = await axios.get(`${constants.apiUrl}/users/me`, {
       withCredentials: true,
@@ -22,31 +22,31 @@ const LogContext = createContext<AuthContext>({
   hitLim: false,
   setHitLim: () => false,
   loading: true,
-  logged: async (): Promise<boolean | User | string> => await getMe(),
+  logged: false,
   setLogged: () => false,
 });
 
 export default function LogProvider(props: any) {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [hitLim, setHitLim] = useState(false);
-  const [logged, setLogged] = useState<
-    Promise<string | boolean | User> | (string | User)
-  >(async () => await getMe());
-  const navigate = useNavigate();
-  useLayoutEffect(() => {
-    const setRoute = async () => {
-      if (!(await logged)) navigate("/login");
-      else if ((await logged) == "reqLimitation") {
+  const [logged, setLogged] = useState<"reqLimitation" | User | boolean>(false);
+  useEffect(() => {
+    const getLogged = async () => {
+      const _logged = await getMe();
+      if (!_logged) {
+        navigate("/login");
+      } else if (_logged == "reqLimitation") {
         setHitLim(true);
-      } else navigate("/");
-
-      // @ts-ignore
-      setLogged(await logged);
-
-      setLoading(false);
+      } else {
+        setLoading(false);
+        setLogged(_logged);
+        navigate("/");
+      }
     };
-    setRoute();
-  }, [logged]);
+
+    getLogged();
+  }, []);
   return (
     <LogContext.Provider
       value={{ loading, logged, setLogged, hitLim, setHitLim }}

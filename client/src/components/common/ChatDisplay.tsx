@@ -21,7 +21,7 @@ export default function ChatDisplay() {
   const { logged } = useAuth();
   const { socket } = useSocketInfo();
   const chatnames = rooms.map((room) =>
-    room.name!.length <= 45
+    !room.isPrivate
       ? room.name
       : room.members!.filter(
           (member: User) => member.id != get(logged, "id")

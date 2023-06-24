@@ -20,8 +20,6 @@ export default async function authSocketMiddleware(
       return next(new Error("UnAuthorized!!"));
     }
 
-    // console.log(cookies);
-
     const { accessToken, refreshToken } = cookies;
 
     if (!accessToken && !refreshToken) {
@@ -57,15 +55,11 @@ export default async function authSocketMiddleware(
         refreshToken
       );
 
-      logger.info("line 60");
-      logger.info({ newAccessToken });
-
       if (!newAccessToken) {
         logger.error("Socket disconnected!! No New Token");
         return next(new Error("UnAuthorized!!"));
       }
 
-      logger.info("line 66");
       set(
         socket.handshake.headers,
         "cookie",
@@ -78,15 +72,6 @@ export default async function authSocketMiddleware(
       });
 
       set(socket, "user", results.decoded);
-      // socket.handshake.headers[
-      //   "set-cookie"
-      // ]! = `refreshToken=${refreshToken}; accessToken=${newAccessToken}`;
-      // socket.handshake.headers.cookie = `refreshToken=${refreshToken}; accessToken=${newAccessToken}`;
-
-      // console.log({ setCookie: socket.handshake.headers["set-cookie"] });
-
-      // const newTokens = get(socket.request.headers, "cookie");
-      // console.log({ newTokens });
 
       return next();
     }

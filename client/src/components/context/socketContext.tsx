@@ -37,7 +37,6 @@ export default function SocketProvider(props: any) {
 
   // init socket connection.
   useEffect(() => {
-    // const socketConnection = () => {
     socket.connect();
     socket.on(EVENTS.CONNECT_ERR, (err: any) => {
       console.log(err.message);
@@ -45,8 +44,6 @@ export default function SocketProvider(props: any) {
     return () => {
       socket.off(EVENTS.CONNECT_ERR);
     };
-    // };
-    // socketConnection();
   }, []);
 
   socket.on(EVENTS.SERVER.ROOMS, (rooms) => {
