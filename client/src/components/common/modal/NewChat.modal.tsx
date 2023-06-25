@@ -17,7 +17,7 @@ import SelectionInput from "../SelectionInput";
 import * as yup from "yup";
 import { useSocketInfo } from "../../context/socketContext";
 import EVENTS from "../../../utils/EVENTS";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Room } from "../../context/chatInfo";
 
 export default function NewChatModal({
@@ -27,11 +27,16 @@ export default function NewChatModal({
   isOpen: boolean;
   onClose: () => void;
 }) {
-  const { socket, setRooms, setCurRoom, rooms, curRoom, emailList } =
-    useSocketInfo();
+  const { socket, setCurRoom, emailList } = useSocketInfo();
   const [error, setError] = useState<any>(null);
+
+  const closeModal = useCallback(() => {
+    setError(null);
+    onClose();
+  }, [onClose]);
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={closeModal}>
       <ModalOverlay />
       {/* @ts-ignore */}
       <ModalContent>
@@ -54,8 +59,7 @@ export default function NewChatModal({
                 if (err) setError(err);
                 else {
                   setCurRoom(results);
-                  onClose();
-                  setError(null);
+                  closeModal();
                 }
               }
             );

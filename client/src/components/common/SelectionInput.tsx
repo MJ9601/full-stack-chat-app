@@ -24,11 +24,12 @@ export default function SelectionInput({
   const [disSuggest, setDisSuggest] = useState(false);
 
   const setFieldValue = (email: string) => () => {
-    setDisSuggest(false);
     helpers.setValue(email);
+    setDisSuggest(false);
   };
 
   useEffect(() => {
+    // @ts-ignore
     setList(selectArr.filter((item) => item.includes(field.value)));
     setDisSuggest(true);
   }, [field.value]);

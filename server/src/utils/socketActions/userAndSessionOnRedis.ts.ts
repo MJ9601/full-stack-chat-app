@@ -67,7 +67,6 @@ export const setUserEmailList = async (ex?: number) => {
 
   const userEmails = users.map((user) => user.username);
 
-  console.log(userEmails);
   await pushToListFromLeftOnRedis(baseKey.USERS_LIST, userEmails, ex && ex);
 };
 
