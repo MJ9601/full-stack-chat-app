@@ -58,7 +58,6 @@ export default function SocketProvider(props: any) {
     setEmailList(emails);
   });
 
-  console.log(emailList);
   return (
     <SocketContext.Provider
       value={{
