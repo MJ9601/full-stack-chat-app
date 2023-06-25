@@ -27,7 +27,6 @@ export const setUserAndSessionOnRedis = async (
 ) => {
   const userRooms: object[] = get(user, "Room")!;
 
-
   await hSetOnRedis(
     baseKey.USER(user.username),
     {
@@ -68,7 +67,7 @@ export const setUserEmailList = async (ex?: number) => {
 
   const userEmails = users.map((user) => user.username);
 
-
+  console.log(userEmails);
   await pushToListFromLeftOnRedis(baseKey.USERS_LIST, userEmails, ex && ex);
 };
 

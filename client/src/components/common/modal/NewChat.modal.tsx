@@ -13,7 +13,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
-import TextField from "../TextField";
+import SelectionInput from "../SelectionInput";
 import * as yup from "yup";
 import { useSocketInfo } from "../../context/socketContext";
 import EVENTS from "../../../utils/EVENTS";
@@ -27,7 +27,8 @@ export default function NewChatModal({
   isOpen: boolean;
   onClose: () => void;
 }) {
-  const { socket, setRooms, setCurRoom, rooms, curRoom } = useSocketInfo();
+  const { socket, setRooms, setCurRoom, rooms, curRoom, emailList } =
+    useSocketInfo();
   const [error, setError] = useState<any>(null);
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -75,13 +76,14 @@ export default function NewChatModal({
               </VStack>
             )}
             <ModalBody pt="1.2rem">
-              <TextField
+              <SelectionInput
                 // @ts-ignore
                 name="username"
                 type="email"
                 label="Username"
                 placeholder="Enter username"
                 autoComplete="off"
+                selectArr={emailList}
               />
             </ModalBody>
             <ModalFooter>

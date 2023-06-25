@@ -9,7 +9,7 @@ import {
   Text,
   Grid,
 } from "@chakra-ui/react";
-import { useChatInfo } from "../context/chatContext";
+// import { useChatInfo } from "../context/chatContext";
 import { useAuth } from "../context/authContext";
 import { useSocketInfo } from "../context/socketContext";
 import { get } from "lodash";

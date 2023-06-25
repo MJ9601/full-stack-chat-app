@@ -30,7 +30,7 @@ export default async function stabilizerSocket(
 
     let emailList = await getUserEmailList();
 
-    if (!emailList) {
+    if (!emailList || emailList.length == 0) {
       await setUserEmailList(10 * 60);
       emailList = await getUserEmailList();
     }
