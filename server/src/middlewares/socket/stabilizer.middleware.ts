@@ -6,6 +6,7 @@ import { getListFromLeftOnRedis } from "../../services/redis/redis.service";
 import baseKey from "../../utils/helper/rediskeys.helper";
 import EVENTS from "../../utils/helper/EVENTS";
 import {
+  getFriendsFromPriRoomList,
   getUserEmailList,
   setUserEmailList,
 } from "../../utils/socketActions/userAndSessionOnRedis.ts";
@@ -36,6 +37,16 @@ export default async function stabilizerSocket(
     }
 
     socket.emit(EVENTS.SERVER.EMAILS, emailList);
+
+    const friendList = await getFriendsFromPriRoomList(
+      get(socket, "user.username")!
+    );
+
+    if (friendList.length > 0)
+      socket
+        .to(friendList)
+        .emit(EVENTS.SERVER.CONNECTED, true, get(socket, "user.username"));
+
     next();
   } catch (err: any) {
     next(new Error(err.message));

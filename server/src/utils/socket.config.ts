@@ -12,6 +12,7 @@ import {
 } from "../controllers/socket/room.controllers";
 import { Callback } from "ioredis";
 import { createMsgHandler } from "../controllers/socket/message.controller";
+import { updateUserStatusHandler } from "../controllers/socket/user.socket.controller";
 // import { roomExistChecking } from "./roomActions/roomExistChecking";
 
 export default function socketConfig({ io }: { io: Server }) {
@@ -46,5 +47,7 @@ export default function socketConfig({ io }: { io: Server }) {
     //   EVENTS.CLIENT.CREATE_MSG,
     //   (socket: Socket) => () => createMsgHandler()
     // );
+
+    socket.on(EVENTS.DISCONNECT, () => updateUserStatusHandler(socket))
   });
 }

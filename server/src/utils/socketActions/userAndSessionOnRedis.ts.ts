@@ -5,8 +5,9 @@ import {
   hGetFromRedis,
   hSetOnRedis,
   pushToListFromLeftOnRedis,
+  removeFromRedis,
 } from "../../services/redis/redis.service";
-import { Session, User } from "@prisma/client";
+import { Prisma, Session, User } from "@prisma/client";
 import baseKey from "../helper/rediskeys.helper";
 import { findManyUsers } from "../../services/user.service";
 
@@ -72,3 +73,35 @@ export const setUserEmailList = async (ex?: number) => {
 
 export const getUserEmailList = async () =>
   await getListFromLeftOnRedis(baseKey.USERS_LIST, 0, -1);
+
+export const getFriendsFromPriRoomList = async (username: string) => {
+  let userRooms = await getListFromLeftOnRedis(baseKey.ROOMS(username), 0, -1);
+
+  if (userRooms && userRooms.length > 0) {
+    userRooms = userRooms.map((room) => JSON.parse(room));
+    const privateRooms = userRooms.filter(
+      (room) => get(room, "isPrivate") == true
+    );
+
+    return privateRooms
+      .map(
+        (room: any) =>
+          (get(room, "members")! as Array<object>).filter(
+            (itm) => get(itm, "username") !== username
+          )[0]
+      )
+      .map((itm: object) => get(itm, "username")!) as string[];
+  }
+  return [];
+};
+
+export const removeUserAndSessionFromRedis = async ({
+  username,
+  sessionId,
+}: {
+  username: string;
+  sessionId: string;
+}) => {
+  await removeFromRedis(baseKey.USER(username));
+  await removeFromRedis(baseKey.SESSION(sessionId));
+};

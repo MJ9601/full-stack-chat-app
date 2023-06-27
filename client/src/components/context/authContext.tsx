@@ -39,14 +39,15 @@ export default function LogProvider(props: any) {
       } else if (_logged == "reqLimitation") {
         setHitLim(true);
       } else {
-        setLoading(false);
         setLogged(_logged);
         navigate("/");
       }
+
+      setLoading(false);
     };
 
     getLogged();
-  }, []);
+  }, [logged]);
   return (
     <LogContext.Provider
       value={{ loading, logged, setLogged, hitLim, setHitLim }}

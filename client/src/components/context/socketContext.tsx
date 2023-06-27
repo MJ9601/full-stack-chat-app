@@ -3,7 +3,9 @@ import EVENTS from "../../utils/EVENTS";
 import constants from "../../utils/constants";
 // import { socketConnection } from "../../hook/socket.connect";
 import { createContext, useContext, useEffect, useState } from "react";
-import { Room } from "./chatInfo";
+import { Room, User } from "./chatInfo";
+import { get, set } from "lodash";
+import { useAuth } from "./authContext";
 
 interface Context {
   socket: Socket;
@@ -34,6 +36,7 @@ export default function SocketProvider(props: any) {
   const [curRoom, setCurRoom] = useState<Room | {}>({});
   const [rooms, setRooms] = useState<Room[]>([]);
   const [emailList, setEmailList] = useState<string[]>([]);
+  const { logged } = useAuth();
 
   // init socket connection.
   useEffect(() => {
@@ -56,6 +59,10 @@ export default function SocketProvider(props: any) {
 
   socket.on(EVENTS.SERVER.EMAILS, (emails) => {
     setEmailList(emails);
+  });
+
+  socket.on(EVENTS.SERVER.CONNECTED, (status, userId) => {
+    console.log({ status, userId });
   });
 
   return (

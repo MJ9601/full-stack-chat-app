@@ -56,7 +56,11 @@ export default function Sidebar() {
               onClick={() => setCurRoom(room)}
             >
               <Avatar size="sm">
-                <AvatarBadge bg="tomato" boxSize="1.1em" />
+                <AvatarBadge
+                  bg={get(room, "status") == true ? "green" : "tomato"}
+                  boxSize=".8em"
+                  border="none"
+                />
               </Avatar>
               <Text>{cutName(chatnames[index] || "")}</Text>
             </HStack>

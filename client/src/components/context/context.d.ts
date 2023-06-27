@@ -1,5 +1,7 @@
+import { Room, User } from "./chatInfo";
+
 export interface AuthContext {
-  logged?: string | boolean | (() => Promise<boolean | User | string>);
+  logged?: string | boolean | User;
   setLogged: (input: boolean) => void;
   loading: boolean;
   hitLim: boolean;

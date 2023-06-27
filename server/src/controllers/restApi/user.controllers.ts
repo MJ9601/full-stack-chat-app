@@ -3,6 +3,8 @@ import { omit } from "lodash";
 import { CreateUserSchema } from "../../schemas/user.schema";
 import { createUser, findOneUser } from "../../services/user.service";
 import logger from "../../utils/helper/logger";
+import { pushToListFromLeftOnRedis } from "../../services/redis/redis.service";
+import baseKey from "../../utils/helper/rediskeys.helper";
 
 export const createUserController = async (
   req: Request<{}, {}, CreateUserSchema>,
@@ -16,11 +18,16 @@ export const createUserController = async (
 
     const newUser = await createUser({ data: rest });
 
+    await pushToListFromLeftOnRedis(baseKey.USERS_LIST, [newUser.username]);
     return res.status(201).send(omit(newUser, "password"));
   } catch (err: any) {
     return res
       .status(500)
-      .send({ msg: "Server Error!", msgErr: err.message, codeErr: err.code });
+      .send({
+        msg: "Server Error!",
+        msgErr: err.message,
+        codeErr: err.response.code,
+      });
   }
 };
 
