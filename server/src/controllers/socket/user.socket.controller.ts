@@ -12,12 +12,12 @@ export const searchOnUserListHandler = () => {};
 export const updateUserStatusHandler = async (socket: Socket) => {
   const username = get(socket, "user.username")!;
   const sessionId = get(socket, "user.session")!;
-  const friendList = await getFriendsFromPriRoomList(username);
+  const { friendList } = await getFriendsFromPriRoomList(username);
 
-  if (friendList.length > 0)
-    socket
-      .to(friendList)
-      .emit(EVENTS.SERVER.CONNECTED, false, get(socket, "user.id"));
+  // if (friendList!.length > 0)
+  //   socket
+  //     .to(friendList!)
+  //     .emit(EVENTS.SERVER.CONNECTED, false, get(socket, "user.id"));
 
   await removeUserAndSessionFromRedis({ username, sessionId });
 };

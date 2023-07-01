@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { User } from "./chatInfo";
 import { AuthContext } from "./context";
 
-const getMe = async (): Promise<boolean | User | "reqLimitation"> => {
+export const getMe = async (): Promise<boolean | User | "reqLimitation"> => {
   try {
     const response = await axios.get(`${constants.apiUrl}/users/me`, {
       withCredentials: true,
@@ -56,4 +56,18 @@ export default function LogProvider(props: any) {
   );
 }
 
-export const useAuth = () => useContext(LogContext);
+export const useAuthContext = () => useContext(LogContext);
+export const useAuth = () => {
+  const [user, setUser] = useState<User | null | "reqLimitation" | boolean>(
+    null
+  );
+  useEffect(() => {
+    const fetchUser = async () => {
+      const _user = await getMe();
+      setUser(_user);
+    };
+    fetchUser();
+  }, []);
+
+  return user;
+};

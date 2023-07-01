@@ -15,13 +15,13 @@ import {
 import { useChatInfo } from "../context/chatContext";
 import { useSocketInfo } from "../context/socketContext";
 import { get } from "lodash";
-import { useAuth } from "../context/authContext";
+import { useAuthContext } from "../context/authContext";
 import NewChatModal from "./modal/NewChat.modal";
 
 export default function Sidebar() {
   // const { setCurRoom } = useChatInfo();
   const { rooms, setCurRoom } = useSocketInfo();
-  const { logged } = useAuth();
+  const { logged } = useAuthContext();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const chatnames = rooms!.map((room) =>
     !room.isPrivate

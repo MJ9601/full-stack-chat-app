@@ -4,14 +4,14 @@ import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
 import PrivateRoute from "./common/PrivateRoute";
 import Home from "./pages/Home";
-import { useAuth } from "./context/authContext";
+import { useAuthContext } from "./context/authContext";
 import Loading from "./common/Loading";
 
 // const Login = lazy(() => import("./pages/auth/Login"));
 // const Signup = lazy(() => import("./pages/auth/Signup"));
 
 export default function View() {
-  const { loading, hitLim, setHitLim } = useAuth();
+  const { loading, hitLim, setHitLim } = useAuthContext();
   useEffect(() => {
     if (hitLim) {
       const timer = setTimeout(() => setHitLim(false), 50000);

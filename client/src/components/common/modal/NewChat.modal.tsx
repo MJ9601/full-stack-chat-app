@@ -9,7 +9,6 @@ import {
   Button,
   Divider,
   Text,
-  HStack,
   VStack,
 } from "@chakra-ui/react";
 import { Form, Formik } from "formik";

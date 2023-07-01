@@ -10,7 +10,7 @@ import {
   Grid,
 } from "@chakra-ui/react";
 // import { useChatInfo } from "../context/chatContext";
-import { useAuth } from "../context/authContext";
+import { useAuthContext } from "../context/authContext";
 import { useSocketInfo } from "../context/socketContext";
 import { get } from "lodash";
 import { User } from "../context/chatInfo";
@@ -18,7 +18,7 @@ import { User } from "../context/chatInfo";
 export default function ChatDisplay() {
   // const { curRoom } = useChatInfo();
   const { rooms, curRoom } = useSocketInfo();
-  const { logged } = useAuth();
+  const { logged } = useAuthContext();
   const { socket } = useSocketInfo();
   const chatnames = rooms.map((room) =>
     !room.isPrivate

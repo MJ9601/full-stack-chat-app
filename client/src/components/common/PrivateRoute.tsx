@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useAuth } from "../context/authContext";
 
 export default function PrivateRoute() {
-  const { logged } = useAuth();
+  const logged = useAuth();
   const location = useLocation();
 
   if (location.pathname == "/login" || location.pathname == "/register")

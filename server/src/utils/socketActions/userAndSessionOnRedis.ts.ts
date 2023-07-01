@@ -1,5 +1,6 @@
 import { get, omit } from "lodash";
 import {
+  getFromRedis,
   getListFromLeftOnRedis,
   hGetAllFromRedis,
   hGetFromRedis,
@@ -7,7 +8,7 @@ import {
   pushToListFromLeftOnRedis,
   removeFromRedis,
 } from "../../services/redis/redis.service";
-import { Prisma, Session, User } from "@prisma/client";
+import { Prisma, Room, Session, User } from "@prisma/client";
 import baseKey from "../helper/rediskeys.helper";
 import { findManyUsers } from "../../services/user.service";
 
@@ -38,7 +39,7 @@ export const setUserAndSessionOnRedis = async (
   );
 
   if (userRooms.length !== 0) {
-    const userRoomsOnRedis = await getListFromLeftOnRedis(
+    let userRoomsOnRedis = await getListFromLeftOnRedis(
       baseKey.ROOMS(user.username),
       0,
       -1
@@ -51,6 +52,28 @@ export const setUserAndSessionOnRedis = async (
         ex && ex
       );
     }
+
+    userRoomsOnRedis = await getListFromLeftOnRedis(
+      baseKey.ROOMS(user.username),
+      0,
+      -1
+    );
+    const { friendList, privateRooms, priRoomWithFriendInfo } =
+      await getFriendsFromPriRoomList(user.username);
+
+    console.log(priRoomWithFriendInfo);
+
+    const _privateRooms = Object.keys(priRoomWithFriendInfo!).reduce(
+      // @ts-ignore
+      async (pre, cur) => {
+        const _userFromRedis = await hGetFromRedis(baseKey.USER(cur), "id");
+        const status = _userFromRedis ? true : false;
+        return [...pre, { ...priRoomWithFriendInfo![cur]!, status }];
+      },
+      [] as Room[] | []
+    );
+
+    console.log(_privateRooms);
   }
 
   await hSetOnRedis(
@@ -78,12 +101,11 @@ export const getFriendsFromPriRoomList = async (username: string) => {
   let userRooms = await getListFromLeftOnRedis(baseKey.ROOMS(username), 0, -1);
 
   if (userRooms && userRooms.length > 0) {
-    userRooms = userRooms.map((room) => JSON.parse(room));
-    const privateRooms = userRooms.filter(
-      (room) => get(room, "isPrivate") == true
-    );
+    const privateRooms = userRooms
+      .map((room) => JSON.parse(room))
+      .filter((room) => get(room, "isPrivate") == true);
 
-    return privateRooms
+    const friendList = privateRooms
       .map(
         (room: any) =>
           (get(room, "members")! as Array<object>).filter(
@@ -91,8 +113,14 @@ export const getFriendsFromPriRoomList = async (username: string) => {
           )[0]
       )
       .map((itm: object) => get(itm, "username")!) as string[];
+
+    const priRoomWithFriendInfo = friendList.reduce((pre, cur, index) => {
+      return { ...pre, [cur]: privateRooms[index] };
+    }, {});
+
+    return { privateRooms, friendList, priRoomWithFriendInfo };
   }
-  return [];
+  return {};
 };
 
 export const removeUserAndSessionFromRedis = async ({

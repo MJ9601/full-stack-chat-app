@@ -5,7 +5,7 @@ import constants from "../../utils/constants";
 import { createContext, useContext, useEffect, useState } from "react";
 import { Room, User } from "./chatInfo";
 import { get, set } from "lodash";
-import { useAuth } from "./authContext";
+import { useAuthContext } from "./authContext";
 
 interface Context {
   socket: Socket;
@@ -36,7 +36,7 @@ export default function SocketProvider(props: any) {
   const [curRoom, setCurRoom] = useState<Room | {}>({});
   const [rooms, setRooms] = useState<Room[]>([]);
   const [emailList, setEmailList] = useState<string[]>([]);
-  const { logged } = useAuth();
+  const { logged } = useAuthContext();
 
   // init socket connection.
   useEffect(() => {

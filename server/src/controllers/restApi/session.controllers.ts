@@ -64,6 +64,7 @@ export const createSessionController = async (
 
     return res.status(201).send({ accessToken, refreshToken });
   } catch (err: any) {
+    console.log({ err });
     return res.status(500).send({
       msgErr: err.message,
       err,
